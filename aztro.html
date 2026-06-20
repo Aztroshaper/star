@@ -33,19 +33,22 @@
             transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* --- EFECTOS VHS Y OLD TV --- */
         .crt-monitor-overlay {
             position: fixed; width: 100%; height: 100%;
             top: 0; left: 0;
             pointer-events: none;
             z-index: 8000;
-            animation: crt-flicker 0.15s infinite;
+            animation: crt-flicker 0.1s infinite;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.95), inset 0 0 30px rgba(25, 25, 30, 0.5);
+            border-radius: 5px;
         }
 
         .crt-monitor-overlay::before {
             content: " "; display: block; position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), 
-                        linear-gradient(90deg, rgba(255, 234, 0, 0.03), rgba(255, 255, 255, 0.02), rgba(255, 234, 0, 0.03));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.6) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
             background-size: 100% 4px, 6px 100%;
             z-index: 8001; pointer-events: none;
         }
@@ -53,9 +56,17 @@
         .crt-monitor-overlay::after {
             content: " "; display: block; position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.9) 100%);
-            box-shadow: inset 0 0 120px rgba(0,0,0,0.95);
+            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.95) 100%);
             z-index: 8002; pointer-events: none;
+        }
+
+        #datamosh-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255, 0, 255, 0.05) 10px, rgba(0, 255, 255, 0.05) 20px);
+            mix-blend-mode: color-dodge;
+            opacity: 0;
+            z-index: 7998;
+            pointer-events: none;
         }
 
         .glow-overlay {
@@ -66,16 +77,16 @@
 
         #vhs-grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.12; z-index: 2; pointer-events: none;
+            opacity: 0.18; z-index: 2; pointer-events: none;
             mix-blend-mode: overlay;
         }
 
         .tracking-distortion {
-            position: fixed; left: 0; width: 100%; height: 25px;
+            position: fixed; left: 0; width: 100%; height: 35px;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(2px) contrast(180%) hue-rotate(15deg);
-            box-shadow: 0 -2px 10px rgba(255, 234, 0, 0.2), 0 2px 10px rgba(255, 234, 0, 0.2);
-            z-index: 3; animation: tracking-roll 7s infinite linear;
+            backdrop-filter: blur(4px) contrast(250%) hue-rotate(45deg);
+            box-shadow: 0 -2px 10px rgba(255, 0, 0, 0.3), 0 2px 10px rgba(0, 255, 255, 0.3);
+            z-index: 3; animation: tracking-roll 6s infinite linear;
             pointer-events: none;
         }
 
@@ -83,23 +94,42 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1;
-            filter: contrast(1.3) saturate(1.4) sepia(0.15) hue-rotate(-5deg) drop-shadow(0 0 15px rgba(255, 234, 0, 0.3));
+            /* Optimización: Eliminado el drop-shadow que destruía el rendimiento */
+            filter: contrast(1.2) saturate(1.3) sepia(0.15) hue-rotate(-5deg);
+            transition: filter 0.1s;
+        }
+
+        .vhs-text-glitch {
+            position: relative;
+            animation: text-glitch-anim 3s infinite alternate;
+        }
+        @keyframes text-glitch-anim {
+            0%, 90%, 100% { text-shadow: 2px 0 0 rgba(255,0,0,0.8), -2px 0 0 rgba(0,255,255,0.8); transform: translate(0); }
+            92% { text-shadow: -3px 0 0 rgba(255,0,0,0.9), 3px 0 0 rgba(0,255,255,0.9); transform: translate(-2px, 1px); }
+            94% { text-shadow: 2px 0 0 rgba(255,0,0,0.8), -2px 0 0 rgba(0,255,255,0.8); transform: translate(2px, -1px); }
+            96% { text-shadow: -4px 0 0 rgba(255,0,0,1), 4px 0 0 rgba(0,255,255,1); transform: translate(0px, 2px); }
+            98% { text-shadow: 1px 0 0 rgba(255,0,0,0.8), -1px 0 0 rgba(0,255,255,0.8); transform: translate(-1px, -2px); }
+        }
+
+        /* Contenedor invisible para centrar el texto glitch */
+        #drag-instruction-container {
+            position: fixed;
+            bottom: 75px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 8004;
+            pointer-events: none;
         }
 
         #drag-instruction {
-            position: fixed;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
             color: rgba(255, 234, 0, 0.75);
             font-size: 0.9rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            z-index: 8004;
-            pointer-events: none;
             white-space: nowrap;
-            animation: pulse-text 2s infinite;
-            text-shadow: 0 0 10px rgba(255, 234, 0, 0.3);
+            animation: pulse-text 2s infinite, text-glitch-anim 4s infinite alternate reverse;
         }
 
         #bottom-nav {
@@ -123,7 +153,6 @@
             letter-spacing: 8px;
             min-width: 250px;
             text-align: center;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
             transition: all 0.3s ease;
         }
 
@@ -154,7 +183,6 @@
             font-size: 2rem;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 0 10px rgba(255,255,255,0.4);
         }
 
         .contact-item span {
@@ -166,7 +194,6 @@
             transform: scale(0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: #FFEA00;
-            text-shadow: 0 0 15px rgba(255, 234, 0, 1), 0 0 30px rgba(255, 234, 0, 0.8);
             text-transform: uppercase;
             letter-spacing: 2px;
             pointer-events: none;
@@ -175,8 +202,7 @@
 
         .contact-item:hover {
             color: #FFEA00;
-            text-shadow: 0 0 20px rgba(255, 234, 0, 1), 0 0 40px rgba(255, 234, 0, 1);
-            transform: scale(1.25);
+            transform: scale(1.25) skew(-5deg);
         }
 
         .contact-item:hover span {
@@ -216,9 +242,11 @@
             .contact-arc-wrapper {
                 transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6));
             }
+            #drag-instruction-container {
+                bottom: 110px;
+            }
             #drag-instruction { 
                 font-size: 0.85rem; 
-                bottom: 110px; 
                 white-space: normal; 
                 width: 90%; 
                 text-align: center; 
@@ -230,8 +258,8 @@
             50% { opacity: 1; } 
             100% { opacity: 0.3; } 
         }
-        @keyframes crt-flicker { 0% { opacity: 0.96; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
-        @keyframes tracking-roll { 0% { top: -5%; } 6% { top: 105%; } 100% { top: 105%; } }
+        @keyframes crt-flicker { 0% { opacity: 0.94; } 50% { opacity: 1; } 100% { opacity: 0.96; } }
+        @keyframes tracking-roll { 0% { top: -10%; } 8% { top: 110%; } 100% { top: 110%; } }
     </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
@@ -241,44 +269,47 @@
     <div class="crt-monitor-overlay"></div>
     <canvas id="vhs-grain"></canvas>
     <div class="tracking-distortion"></div>
+    <div id="datamosh-layer"></div>
 
     <div id="canvas-container"></div>
 
-    <div id="drag-instruction">Desliza la órbita para ver el menú</div>
+    <div id="drag-instruction-container">
+        <div id="drag-instruction" class="vhs-text-glitch">SWIPE THE ORBIT TO EXPLORE</div>
+    </div>
 
     <div id="bottom-nav">
-        <div id="nav-title">EXPLORE</div>
+        <div id="nav-title" class="vhs-text-glitch">EXPLORE</div>
     </div>
 
     <div id="contact-area">
         <div class="contact-arc-wrapper" style="--rot: -20deg; --ty: 35px;">
-            <a href="https://instagram.com/aztroshaper" target="_blank" class="contact-item">
-                <i class="fab fa-instagram"></i><span>Instagram</span>
+            <a href="https://instagram.com/aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="fab fa-instagram"></i><span class="vhs-text-glitch">Instagram</span>
             </a>
         </div>
         <div class="contact-arc-wrapper" style="--rot: -10deg; --ty: 15px;">
-            <a href="https://instagram.com/direct/t/aztroshaper" target="_blank" class="contact-item">
-                <i class="far fa-paper-plane"></i><span>Mensaje</span>
+            <a href="https://instagram.com/direct/t/aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="far fa-paper-plane"></i><span class="vhs-text-glitch">Mensaje</span>
             </a>
         </div>
         <div class="contact-arc-wrapper" style="--rot: -3deg; --ty: 5px;">
-            <a href="https://tiktok.com/@aztroshaper" target="_blank" class="contact-item">
-                <i class="fab fa-tiktok"></i><span>TikTok</span>
+            <a href="https://tiktok.com/@aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="fab fa-tiktok"></i><span class="vhs-text-glitch">TikTok</span>
             </a>
         </div>
         <div class="contact-arc-wrapper" style="--rot: 3deg; --ty: 5px;">
-            <a href="https://www.pi.fyi/u/aztroshaper" target="_blank" class="contact-item">
-                <i class="fas fa-star"></i><span>Pi.fyi</span>
+            <a href="https://www.pi.fyi/u/aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="fas fa-star"></i><span class="vhs-text-glitch">Pi.fyi</span>
             </a>
         </div>
         <div class="contact-arc-wrapper" style="--rot: 10deg; --ty: 15px;">
-            <a href="https://www.youtube.com/@Aztroshaper" target="_blank" class="contact-item">
-                <i class="fab fa-youtube"></i><span>YouTube</span>
+            <a href="https://www.youtube.com/@Aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="fab fa-youtube"></i><span class="vhs-text-glitch">YouTube</span>
             </a>
         </div>
         <div class="contact-arc-wrapper" style="--rot: 20deg; --ty: 35px;">
-            <a href="https://www.artstation.com/aztroshaper" target="_blank" class="contact-item">
-                <i class="fab fa-artstation"></i><span>ArtStation</span>
+            <a href="https://www.artstation.com/aztroshaper" target="_blank" class="contact-item vhs-text-glitch">
+                <i class="fab fa-artstation"></i><span class="vhs-text-glitch">ArtStation</span>
             </a>
         </div>
     </div>
@@ -293,6 +324,8 @@
         const canvas = document.getElementById('vhs-grain');
         const ctx = canvas.getContext('2d');
         canvas.width = 320; canvas.height = 320;
+        
+        // Optimización: Reducir los FPS del grano para mejorar rendimiento general
         function renderNoise() {
             const imgData = ctx.createImageData(canvas.width, canvas.height);
             const buffer = new Uint32Array(imgData.data.buffer);
@@ -301,7 +334,7 @@
                 buffer[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
             }
             ctx.putImageData(imgData, 0, 0);
-            requestAnimationFrame(renderNoise);
+            setTimeout(renderNoise, 50); // Aprox 20 FPS en vez de amarrarlo a los 60 FPS del navegador
         }
         renderNoise();
 
@@ -320,11 +353,85 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
+        /* ====================================================
+           BACKGROUND: NAVE ESPACIAL Y PLANETA
+        ==================================================== */
+        
+        const planetGroup = new THREE.Group();
+        
+        // Optimización: Polígonos reducidos de 4 a 3
+        const planetGeo = new THREE.IcosahedronGeometry(35, 3); 
+        const planetMat = new THREE.MeshStandardMaterial({ 
+            color: 0x0a1e3f, 
+            roughness: 0.9, 
+            metalness: 0.2,
+            flatShading: true
+        });
+        const planet = new THREE.Mesh(planetGeo, planetMat);
+        
+        const atmosphereGeo = new THREE.IcosahedronGeometry(36, 3);
+        const atmosphereMat = new THREE.MeshPhongMaterial({
+            color: 0x44aaff,
+            transparent: true,
+            opacity: 0.15,
+            wireframe: true,
+            blending: THREE.AdditiveBlending
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+        
+        planetGroup.add(planet, atmosphere);
+        // ¡Planeta Centrado!
+        planetGroup.position.set(0, 0, -100); 
+        scene.add(planetGroup);
+
+        const sunLight = new THREE.DirectionalLight(0xffddaa, 1.8);
+        sunLight.position.set(-60, 30, -50);
+        scene.add(sunLight);
+
+        const interiorGroup = new THREE.Group();
+        const shipPanelMat = new THREE.MeshStandardMaterial({ color: 0x111118, roughness: 0.8, metalness: 0.6 });
+        const metalTrimMat = new THREE.MeshStandardMaterial({ color: 0x2a2a35, roughness: 0.5, metalness: 0.9 });
+
+        const topWindowFrame = new THREE.Mesh(new THREE.BoxGeometry(140, 20, 20), shipPanelMat);
+        topWindowFrame.position.set(0, 32, -35);
+        interiorGroup.add(topWindowFrame);
+
+        const bottomConsole = new THREE.Mesh(new THREE.BoxGeometry(140, 25, 40), shipPanelMat);
+        bottomConsole.position.set(0, -28, -25);
+        bottomConsole.rotation.x = -0.2; 
+        interiorGroup.add(bottomConsole);
+
+        const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(4, 5, 80, 16), metalTrimMat);
+        leftPillar.position.set(-45, 0, -30);
+        interiorGroup.add(leftPillar);
+
+        const rightPillar = new THREE.Mesh(new THREE.CylinderGeometry(4, 5, 80, 16), metalTrimMat);
+        rightPillar.position.set(45, 0, -30);
+        interiorGroup.add(rightPillar);
+
+        const consoleLights = [];
+        for(let i=0; i<60; i++){
+            const isRed = Math.random() > 0.5;
+            const btnMat = new THREE.MeshStandardMaterial({ 
+                color: isRed ? 0xff0000 : 0x00ffff, 
+                emissive: isRed ? 0xaa0000 : 0x00aaaa,
+                emissiveIntensity: Math.random() * 2
+            });
+            const btn = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 1.5), btnMat);
+            btn.position.set((Math.random() - 0.5) * 80, 12.5, (Math.random() - 0.5) * 15);
+            btn.rotation.y = Math.random();
+            bottomConsole.add(btn);
+            consoleLights.push({ mesh: btn, baseIntensity: btnMat.emissiveIntensity, speed: Math.random() * 5 });
+        }
+        
+        scene.add(interiorGroup);
+
+        // Optimización: Reducción de estrellas de 2500 a 1500
         const starsGeo = new THREE.BufferGeometry();
         const starsMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.06, transparent: true, opacity: 0.8});
         const starsVerts = [];
-        for(let i=0; i<2500; i++) {
-            starsVerts.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+        for(let i=0; i<1500; i++) {
+            starsVerts.push((Math.random()-0.5)*150, (Math.random()-0.5)*150, (Math.random()-0.5)*150);
         }
         starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starsVerts, 3));
         const starField = new THREE.Points(starsGeo, starsMat);
@@ -355,7 +462,8 @@
         textureLoader.load('az.svg', function(texture) {
             texture.colorSpace = THREE.SRGBColorSpace;
             
-            const layersCount = 20;
+            // Optimización: 10 capas en lugar de 20
+            const layersCount = 10;
             const separation = 0.06;
             
             for (let i = 1; i <= layersCount; i++) {
@@ -757,6 +865,12 @@
         });
 
         const clock = new THREE.Clock();
+        
+        let glitchFramesRemaining = 0;
+        let baseCameraY = 0;
+        let baseCameraX = 0;
+        const canvasContainer = document.getElementById('canvas-container');
+        const datamoshLayer = document.getElementById('datamosh-layer');
 
         window.onload = () => {
             gsap.fromTo(".contact-item", 
@@ -831,6 +945,13 @@
             dragVelocity *= 0.95;
             manualRotationOffset += dragVelocity;
 
+            planetGroup.rotation.y += 0.0005;
+            planetGroup.rotation.x = Math.sin(time * 0.1) * 0.05;
+
+            consoleLights.forEach((light, i) => {
+                light.mesh.material.emissiveIntensity = light.baseIntensity + Math.sin(time * light.speed) * 0.5;
+            });
+
             orbitLight.position.x = Math.sin(time) * 6;
             orbitLight.position.z = Math.cos(time) * 6;
             orbitLight.position.y = Math.sin(time * 0.5) * 3;
@@ -877,6 +998,26 @@
                 navTitle.style.color = "#ffffff";
                 navTitle.style.textShadow = "0 0 15px rgba(255, 255, 255, 0.6)";
                 currentFrontObj = null;
+            }
+
+            if (!isTransitioning) {
+                if (Math.random() < 0.005) { 
+                    glitchFramesRemaining = Math.floor(Math.random() * 5) + 2; 
+                }
+                
+                if (glitchFramesRemaining > 0) {
+                    camera.position.y += (Math.random() - 0.5) * 0.8;
+                    camera.position.x += (Math.random() - 0.5) * 0.5;
+                    // Optimización: sin drop-shadow pesado durante el glitch
+                    canvasContainer.style.filter = `contrast(2) saturate(2) sepia(0.3) hue-rotate(15deg) blur(1px)`;
+                    if(Math.random() > 0.5) datamoshLayer.style.opacity = 0.8;
+                    glitchFramesRemaining--;
+                } else {
+                    camera.position.y = 0;
+                    camera.position.x = 0;
+                    canvasContainer.style.filter = `contrast(1.2) saturate(1.3) sepia(0.15) hue-rotate(-5deg)`;
+                    datamoshLayer.style.opacity = 0;
+                }
             }
 
             starField.rotation.y = time * 0.02;
