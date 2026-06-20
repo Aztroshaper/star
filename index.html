@@ -4,24 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23FFFFFF' d='M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z'/></svg>">
   <style>
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
     }
+
     body, html {
       width: 100%; height: 100%;
       background-color: #000;
       overflow: hidden;
       font-family: 'Courier New', Courier, monospace;
       display: flex; justify-content: center; align-items: center;
+      
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
       -webkit-user-drag: none;
     }
+
     .crt-monitor {
       position: relative; width: 100%; height: 100%;
       background: #050505;
@@ -29,6 +33,7 @@
       overflow: hidden;
       animation: crt-flicker 0.2s infinite;
     }
+
     .crt-monitor::before {
       content: " "; display: block; position: absolute;
       top: 0; left: 0; bottom: 0; right: 0;
@@ -37,16 +42,19 @@
       background-size: 100% 3px, 6px 100%;
       z-index: 10; pointer-events: none;
     }
+
     .crt-monitor::after {
       content: " "; display: block; position: absolute;
       top: 0; left: 0; bottom: 0; right: 0;
       background: radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 100%);
       z-index: 11; pointer-events: none;
     }
+
     #vhs-grain {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       opacity: 0.08; z-index: 2; pointer-events: none;
     }
+
     .tracking-distortion {
       position: absolute; left: 0; width: 100%; height: 20px;
       background: rgba(255, 255, 255, 0.04);
@@ -54,14 +62,16 @@
       z-index: 3; animation: tracking-roll 8s infinite linear;
       pointer-events: none;
     }
+
     .scene {
       position: relative; z-index: 5;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       width: 100%; height: 100%; transform: scale(0.95);
     }
+
     .logo-perspective {
       perspective: 2000px; 
-      margin-bottom: 70px;
+      margin-bottom: 70px; 
       position: relative;
     }
 
@@ -69,6 +79,7 @@
       position: relative; width: 480px; height: 480px;
       transform-style: preserve-3d; transition: transform 0.1s ease-out;
     }
+
     .logo-idle-float {
       position: relative; width: 100%; height: 100%;
       transform-style: preserve-3d;
@@ -91,7 +102,6 @@
       clip-path: inset(100% 0 0 0);
       transform: translateZ(2px);
       transition: clip-path 0.1s linear;
-
       filter: brightness(0) saturate(100%) invert(86%) sepia(87%) saturate(1512%) hue-rotate(352deg) brightness(105%) contrast(105%) drop-shadow(0 0 20px rgba(255, 234, 0, 0.6));
     }
 
@@ -116,7 +126,6 @@
       animation: burst-anim 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-
     .loading-interface {
       display: flex; flex-direction: column; align-items: center; gap: 25px;
     }
@@ -129,11 +138,13 @@
       width: 30px; height: 30px;
       fill: #151515; transition: fill 0.2s, filter 0.2s;
     }
+
     .star-icon.active {
       fill: #FFEA00;
       animation: star-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
                  star-levitate 1.5s ease-in-out 0.8s infinite alternate;
     }
+
     .status-text-container {
       height: 35px; display: flex; justify-content: center; align-items: center;
       animation: text-float 3s ease-in-out infinite alternate;
@@ -161,26 +172,27 @@
     #master-fade {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-color: #000; z-index: 999; pointer-events: none;
-      opacity: 1; transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 1; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @media (max-width: 768px) {
-      .logo-3d-master { width: 280px; height: 280px; }
+      .logo-3d-master { width: 340px; height: 340px; }
       .logo-perspective { margin-bottom: 50px; }
       .loading-interface { gap: 20px; }
-      .stars-track { gap: 10px; }
-      .star-icon { width: 22px; height: 22px; }
-      .status-text { font-size: 10pt; letter-spacing: 8px; }
-      .status-text.visible { letter-spacing: 2px; }
-      .burst-star { width: 18px; height: 18px; top: -9px; left: -9px; }
+      .stars-track { gap: 12px; }
+      .star-icon { width: 26px; height: 26px; }
+      .status-text { font-size: 11pt; letter-spacing: 8px; }
+      .status-text.visible { letter-spacing: 3px; }
+      .burst-star { width: 20px; height: 20px; top: -10px; left: -10px; }
     }
 
     @media (max-width: 480px) {
-      .logo-3d-master { width: 220px; height: 220px; }
-      .status-text { font-size: 8pt; }
-      .star-icon { width: 18px; height: 18px; }
-      .stars-track { gap: 6px; }
+      .logo-3d-master { width: 280px; height: 280px; }
+      .status-text { font-size: 10pt; }
+      .star-icon { width: 22px; height: 22px; }
+      .stars-track { gap: 8px; }
     }
+
     @keyframes burst-anim {
       0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 5px #FFEA00); }
       50% { opacity: 1; filter: drop-shadow(0 0 15px #FFEA00); }
@@ -244,7 +256,6 @@
   <div id="master-fade"></div>
 
   <script>
-
     document.addEventListener('keydown', function(e) {
       if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 's' || e.key === 'p')) { e.preventDefault(); }
       if (e.key === 'F12') { e.preventDefault(); }
@@ -361,7 +372,7 @@
       let burstTriggered = false;
       
       const timer = setInterval(() => {
-        percentage += Math.random() * 0.5 + 0.15; 
+        percentage += Math.random() * 0.9 + 0.3; 
         
         if (percentage >= 100) {
           percentage = 100;
@@ -373,7 +384,7 @@
             burstTriggered = true;
           }
 
-          setTimeout(executeExitTransition, 3500); 
+          setTimeout(executeExitTransition, 2000); 
         } else {
           const emptySpace = 100 - percentage;
           liquidLayer.style.clipPath = `inset(${emptySpace}% 0 0 0)`;
@@ -395,7 +406,7 @@
       fadeOverlay.style.opacity = '1';
       setTimeout(() => {
         window.location.href = 'porta.html';
-      }, 2500);
+      }, 1500);
     }
   </script>
 </body>
