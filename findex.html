@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aztro System</title>
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    body, html {
+      width: 100%; height: 100%;
+      background-color: #000;
+      overflow: hidden;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex; justify-content: center; align-items: center;
+      
+      /* --- PROTECCIÓN CONTRA COPIA Y SELECCIÓN --- */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .crt-monitor {
+      position: relative; width: 100%; height: 100%;
+      background: #050505;
+      display: flex; justify-content: center; align-items: center;
+      overflow: hidden;
+      animation: crt-flicker 0.2s infinite;
+    }
+
+    .crt-monitor::before {
+      content: " "; display: block; position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                  linear-gradient(90deg, rgba(255, 234, 0, 0.02), rgba(255, 255, 255, 0.02), rgba(255, 234, 0, 0.02));
+      background-size: 100% 3px, 6px 100%;
+      z-index: 10; pointer-events: none;
+    }
+
+    .crt-monitor::after {
+      content: " "; display: block; position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 100%);
+      z-index: 11; pointer-events: none;
+    }
+
+    #vhs-grain {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.08; z-index: 2; pointer-events: none;
+    }
+
+    .tracking-distortion {
+      position: absolute; left: 0; width: 100%; height: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(1px) contrast(150%);
+      z-index: 3; animation: tracking-roll 8s infinite linear;
+      pointer-events: none;
+    }
+
+    .scene {
+      position: relative; z-index: 5;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      width: 100%; height: 100%; transform: scale(0.95);
+    }
+
+    /* --- LOGO 3D --- */
+    .logo-perspective {
+      perspective: 2000px; 
+      margin-bottom: 70px; /* Reducido para subir la barra y el texto */
+      position: relative;
+    }
+
+    .logo-3d-master {
+      position: relative; width: 480px; height: 480px;
+      transform-style: preserve-3d; transition: transform 0.1s ease-out;
+    }
+
+    .logo-idle-float {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      animation: vhs-float 4s ease-in-out infinite alternate;
+    }
+
+    .logo-layer {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: url('az.svg') no-repeat center/contain;
+      transform-style: preserve-3d; pointer-events: none;
+    }
+
+    .logo-front {
+      filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
+    }
+
+    .logo-liquid {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: url('az.svg') no-repeat center/contain;
+      clip-path: inset(100% 0 0 0);
+      transform: translateZ(2px);
+      transition: clip-path 0.1s linear;
+      /* Mismo amarillo exacto */
+      filter: brightness(0) saturate(100%) invert(86%) sepia(87%) saturate(1512%) hue-rotate(352deg) brightness(105%) contrast(105%) drop-shadow(0 0 20px rgba(255, 234, 0, 0.6));
+    }
+
+    /* --- EXPLOSIÓN DE ESTRELLAS AL 100% --- */
+    #burst-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .burst-star {
+      position: absolute;
+      width: 25px; height: 25px;
+      top: -12.5px; left: -12.5px;
+      fill: #FFEA00;
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .burst-star.animate {
+      animation: burst-anim 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* --- INTERFAZ --- */
+    .loading-interface {
+      display: flex; flex-direction: column; align-items: center; gap: 25px;
+    }
+
+    .stars-track {
+      display: flex; gap: 18px; position: relative;
+    }
+
+    .star-icon {
+      width: 30px; height: 30px;
+      fill: #151515; transition: fill 0.2s, filter 0.2s;
+    }
+
+    .star-icon.active {
+      fill: #FFEA00;
+      animation: star-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                 star-levitate 1.5s ease-in-out 0.8s infinite alternate;
+    }
+
+    .status-text-container {
+      height: 35px; display: flex; justify-content: center; align-items: center;
+      animation: text-float 3s ease-in-out infinite alternate;
+    }
+
+    .status-text {
+      color: #ffffff; font-size: 13pt; letter-spacing: 18px;
+      text-transform: uppercase; text-align: center; font-weight: bold;
+      opacity: 0; transform: translateY(30px) scale(0.8); filter: blur(8px);
+      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .status-text.visible {
+      opacity: 0.95; transform: translateY(0) scale(1);
+      letter-spacing: 5px; filter: blur(0);
+    }
+
+    .star-glow {
+      color: #FFEA00; font-weight: bold;
+      text-shadow: 0 0 15px rgba(255, 234, 0, 1), 0 0 30px rgba(255, 234, 0, 0.6);
+      display: inline-block;
+      animation: pulse-glow 1s infinite alternate;
+    }
+
+    #master-fade {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: #000; z-index: 999; pointer-events: none;
+      opacity: 1; transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* --- RESPONSIVIDAD (MÓVILES) --- */
+    @media (max-width: 768px) {
+      .logo-3d-master { width: 280px; height: 280px; }
+      .logo-perspective { margin-bottom: 50px; }
+      .loading-interface { gap: 20px; }
+      .stars-track { gap: 10px; }
+      .star-icon { width: 22px; height: 22px; }
+      .status-text { font-size: 10pt; letter-spacing: 8px; }
+      .status-text.visible { letter-spacing: 2px; }
+      .burst-star { width: 18px; height: 18px; top: -9px; left: -9px; }
+    }
+
+    @media (max-width: 480px) {
+      .logo-3d-master { width: 220px; height: 220px; }
+      .status-text { font-size: 8pt; }
+      .star-icon { width: 18px; height: 18px; }
+      .stars-track { gap: 6px; }
+    }
+
+    /* --- KEYFRAMES --- */
+    @keyframes burst-anim {
+      0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 5px #FFEA00); }
+      50% { opacity: 1; filter: drop-shadow(0 0 15px #FFEA00); }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg); opacity: 0; filter: drop-shadow(0 0 5px #FFEA00); }
+    }
+
+    @keyframes star-pop {
+      0% { transform: scale(0.5) rotate(-90deg); fill: #1a1a1a; }
+      40% { transform: scale(2.2) rotate(180deg); fill: #fff; filter: drop-shadow(0 0 25px #fff); }
+      70% { transform: scale(0.9) rotate(380deg); fill: #FFEA00; }
+      100% { transform: scale(1.3) rotate(360deg); filter: drop-shadow(0 0 15px rgba(255, 234, 0, 1)); }
+    }
+
+    @keyframes star-levitate {
+      0% { transform: scale(1.3) translateY(0px) rotate(360deg); filter: drop-shadow(0 0 10px rgba(255, 234, 0, 0.7)); }
+      100% { transform: scale(1.4) translateY(-10px) rotate(370deg); filter: drop-shadow(0 0 25px rgba(255, 234, 0, 1)); }
+    }
+
+    @keyframes pulse-glow {
+      0% { transform: scale(1); text-shadow: 0 0 10px rgba(255,234,0,0.8); }
+      100% { transform: scale(1.1) rotate(2deg); text-shadow: 0 0 25px rgba(255,234,0,1); }
+    }
+
+    @keyframes text-float {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-6px); }
+    }
+
+    @keyframes crt-flicker { 0% { opacity: 0.985; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
+    @keyframes tracking-roll { 0% { top: -5%; } 6% { top: 105%; } 100% { top: 105%; } }
+    
+    @keyframes vhs-float {
+      0% { transform: rotateX(10deg) rotateY(-10deg) translateY(0px); }
+      100% { transform: rotateX(20deg) rotateY(10deg) translateY(-8px); }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+
+  <div class="crt-monitor">
+    <canvas id="vhs-grain"></canvas>
+    <div class="tracking-distortion"></div>
+
+    <div class="scene">
+      <div class="logo-perspective">
+        <div class="logo-3d-master" id="interactive-anchor">
+          <div class="logo-idle-float" id="extrusion-target"></div>
+          <div id="burst-container"></div>
+        </div>
+      </div>
+
+      <div class="loading-interface">
+        <div class="stars-track" id="stars-container"></div>
+        <div class="status-text-container">
+          <div class="status-text" id="loading-msg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="master-fade"></div>
+
+  <script>
+    // PREVENCIÓN DE TECLAS DE DESARROLLADOR Y COPIA
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 's' || e.key === 'p')) { e.preventDefault(); }
+      if (e.key === 'F12') { e.preventDefault(); }
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); }
+    });
+
+    const container = document.getElementById('extrusion-target');
+    const burstContainer = document.getElementById('burst-container');
+    const layersCount = 20; 
+    const separation = 1.8; 
+
+    for (let i = 1; i <= layersCount; i++) {
+      const layer = document.createElement('div');
+      layer.className = 'logo-layer';
+      layer.style.transform = `translateZ(${-i * separation}px)`;
+      const darkness = 1 - (i / layersCount) * 0.75;
+      layer.style.filter = `brightness(0) invert(1) brightness(${darkness})`;
+      container.appendChild(layer);
+    }
+
+    const frontLayer = document.createElement('div');
+    frontLayer.className = 'logo-layer logo-front';
+    frontLayer.style.transform = `translateZ(0px)`;
+    container.appendChild(frontLayer);
+
+    const liquidLayer = document.createElement('div');
+    liquidLayer.className = 'logo-liquid';
+    container.appendChild(liquidLayer);
+
+    const anchor = document.getElementById('interactive-anchor');
+    document.addEventListener('mousemove', (event) => {
+      const cx = (event.clientX / window.innerWidth) - 0.5;
+      const cy = (event.clientY / window.innerHeight) - 0.5;
+      anchor.style.transform = `rotateX(${-cy * 45}deg) rotateY(${cx * 45}deg)`;
+    });
+
+    const canvas = document.getElementById('vhs-grain');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 320; canvas.height = 320;
+    function renderNoise() {
+      const imgData = ctx.createImageData(canvas.width, canvas.height);
+      const buffer = new Uint32Array(imgData.data.buffer);
+      for (let i = 0; i < buffer.length; i++) {
+        const noise = (Math.random() * 255) | 0;
+        buffer[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      requestAnimationFrame(renderNoise);
+    }
+    renderNoise();
+
+    const fadeOverlay = document.getElementById('master-fade');
+    const starsContainer = document.getElementById('stars-container');
+    const msgContainer = document.getElementById('loading-msg');
+
+    const starSVGPath = `<path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z"/>`;
+    const starSVG = `<svg class="star-icon" viewBox="0 0 24 24">${starSVGPath}</svg>`;
+    starsContainer.innerHTML = starSVG.repeat(10);
+    const starNodes = document.querySelectorAll('.star-icon');
+
+    const messages = [
+      "Welcome starlight, ready to shine?",
+      "Make them <span class='star-glow'>star</span>e",
+      "Let's aztro-shape your creations"
+    ];
+
+    let currentMsgIndex = -1;
+
+    function updateMessage(index) {
+      if (currentMsgIndex === index) return;
+      currentMsgIndex = index;
+      
+      msgContainer.classList.remove('visible');
+      
+      setTimeout(() => {
+        msgContainer.innerHTML = messages[index];
+        msgContainer.classList.add('visible');
+      }, 500); 
+    }
+
+    function triggerLogoBurst() {
+      const isMobile = window.innerWidth <= 768;
+      const burstCount = isMobile ? 8 : 12;
+      const radius = isMobile ? 120 : 200;
+
+      for (let i = 0; i < burstCount; i++) {
+        const burstStar = document.createElement('div');
+        burstStar.className = 'burst-star';
+        burstStar.innerHTML = `<svg viewBox="0 0 24 24" style="width:100%;height:100%;">${starSVGPath}</svg>`;
+        
+        const angle = (i / burstCount) * (Math.PI * 2);
+        const tx = Math.cos(angle) * (radius + Math.random() * 50);
+        const ty = Math.sin(angle) * (radius + Math.random() * 50);
+        
+        burstStar.style.setProperty('--tx', `${tx}px`);
+        burstStar.style.setProperty('--ty', `${ty}px`);
+        
+        burstContainer.appendChild(burstStar);
+        
+        setTimeout(() => {
+          burstStar.classList.add('animate');
+        }, Math.random() * 200);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => fadeOverlay.style.opacity = '0', 300);
+      executeDynamicLoading();
+    });
+
+    function executeDynamicLoading() {
+      let percentage = 0;
+      let activeStars = 0;
+      let burstTriggered = false;
+      
+      const timer = setInterval(() => {
+        percentage += Math.random() * 0.5 + 0.15; 
+        
+        if (percentage >= 100) {
+          percentage = 100;
+          clearInterval(timer);
+          liquidLayer.style.clipPath = `inset(0% 0 0 0)`;
+          
+          if (!burstTriggered) {
+            triggerLogoBurst();
+            burstTriggered = true;
+          }
+
+          setTimeout(executeExitTransition, 3500); 
+        } else {
+          const emptySpace = 100 - percentage;
+          liquidLayer.style.clipPath = `inset(${emptySpace}% 0 0 0)`;
+        }
+
+        if (percentage < 33) updateMessage(0);
+        else if (percentage < 66) updateMessage(1);
+        else updateMessage(2);
+
+        const expectedStars = Math.floor((percentage / 100) * 10);
+        if (expectedStars > activeStars && activeStars < 10) {
+          starNodes[activeStars].classList.add('active');
+          activeStars++;
+        }
+      }, 50);
+    }
+
+    function executeExitTransition() {
+      fadeOverlay.style.opacity = '1';
+      setTimeout(() => {
+        window.location.href = 'porta.html';
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
