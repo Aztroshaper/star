@@ -176,21 +176,23 @@
     }
 
     @media (max-width: 768px) {
-      .logo-3d-master { width: 340px; height: 340px; }
-      .logo-perspective { margin-bottom: 50px; }
+      .logo-3d-master { width: 420px; height: 420px; }
+      .logo-perspective { margin-bottom: 60px; }
       .loading-interface { gap: 20px; }
-      .stars-track { gap: 12px; }
-      .star-icon { width: 26px; height: 26px; }
-      .status-text { font-size: 11pt; letter-spacing: 8px; }
-      .status-text.visible { letter-spacing: 3px; }
-      .burst-star { width: 20px; height: 20px; top: -10px; left: -10px; }
+      .stars-track { gap: 14px; }
+      .star-icon { width: 34px; height: 34px; }
+      .status-text { font-size: 14pt; letter-spacing: 6px; }
+      .status-text.visible { letter-spacing: 4px; }
+      .burst-star { width: 25px; height: 25px; top: -12.5px; left: -12.5px; }
     }
 
     @media (max-width: 480px) {
-      .logo-3d-master { width: 280px; height: 280px; }
-      .status-text { font-size: 10pt; }
-      .star-icon { width: 22px; height: 22px; }
-      .stars-track { gap: 8px; }
+      .logo-3d-master { width: 320px; height: 320px; }
+      .logo-perspective { margin-bottom: 40px; }
+      .status-text { font-size: 12pt; letter-spacing: 4px; }
+      .status-text.visible { letter-spacing: 2px; }
+      .star-icon { width: 26px; height: 26px; }
+      .stars-track { gap: 6px; }
     }
 
     @keyframes burst-anim {
@@ -339,7 +341,7 @@
     function triggerLogoBurst() {
       const isMobile = window.innerWidth <= 768;
       const burstCount = isMobile ? 8 : 12;
-      const radius = isMobile ? 120 : 200;
+      const radius = isMobile ? 160 : 200;
 
       for (let i = 0; i < burstCount; i++) {
         const burstStar = document.createElement('div');
