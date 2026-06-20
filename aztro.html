@@ -184,17 +184,45 @@
             transform: scale(1);
         }
 
+        /* --- AJUSTES EXCLUSIVOS PARA MÓVILES --- */
         @media (max-width: 768px) {
-            #bottom-nav { bottom: 20px; gap: 15px; }
-            #nav-title { font-size: 16pt; min-width: 150px; letter-spacing: 4px; }
+            #bottom-nav { 
+                bottom: 45px; 
+                gap: 15px; 
+                width: 100%; 
+                pointer-events: none; 
+            }
+            #nav-title { 
+                font-size: 18pt; 
+                min-width: 220px; 
+                letter-spacing: 5px; 
+                pointer-events: auto; 
+                cursor: pointer;
+                padding: 12px 25px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 10px;
+                border: 1px solid rgba(255, 234, 0, 0.3);
+            }
             
-            #contact-area { top: 15px; gap: 8px; width: 100%; padding: 0 5px; justify-content: space-evenly; }
-            .contact-item { font-size: 1.8rem; }
+            #contact-area { 
+                top: 25px; 
+                gap: 0; 
+                width: 90%; 
+                padding: 0; 
+                justify-content: space-around; 
+            }
+            .contact-item { font-size: 2.4rem; }
             .contact-item span { display: none; }
             .contact-arc-wrapper {
                 transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6));
             }
-            #drag-instruction { font-size: 0.75rem; bottom: 65px; }
+            #drag-instruction { 
+                font-size: 0.85rem; 
+                bottom: 110px; 
+                white-space: normal; 
+                width: 90%; 
+                text-align: center; 
+            }
         }
 
         @keyframes pulse-text { 
@@ -548,6 +576,7 @@
         const mouse = new THREE.Vector2();
         const navTitle = document.getElementById('nav-title');
         let hoveredObject = null;
+        let currentFrontObj = null; 
         let isTransitioning = false;
         
         let manualRotationOffset = 0;
@@ -602,18 +631,22 @@
                         duration: 0.4, ease: "elastic.out(1, 0.5)" 
                     });
                     
-                    navTitle.innerText = hoveredObject.userData.name;
-                    navTitle.style.color = "#FFEA00";
-                    navTitle.style.textShadow = "0 0 25px rgba(255, 234, 0, 1)";
+                    if (window.innerWidth > 768) {
+                        navTitle.innerText = hoveredObject.userData.name;
+                        navTitle.style.color = "#FFEA00";
+                        navTitle.style.textShadow = "0 0 25px rgba(255, 234, 0, 1)";
+                    }
                     document.body.style.cursor = 'pointer';
                 }
             } else {
                 if (hoveredObject) {
                     gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX, y: hoveredObject.userData.initialScaleY, z: hoveredObject.userData.initialScaleZ, duration: 0.3 });
                     hoveredObject = null;
-                    navTitle.innerText = "EXPLORE";
-                    navTitle.style.color = "#ffffff";
-                    navTitle.style.textShadow = "0 0 15px rgba(255, 255, 255, 0.6)";
+                    if (window.innerWidth > 768) {
+                        navTitle.innerText = "EXPLORE";
+                        navTitle.style.color = "#ffffff";
+                        navTitle.style.textShadow = "0 0 15px rgba(255, 255, 255, 0.6)";
+                    }
                 }
                 if(isDraggingOrbit) {
                     document.body.style.cursor = 'grabbing';
@@ -654,62 +687,72 @@
             isDraggingOrbit = false;
         });
 
+        function execTransition(targetMesh) {
+            isTransitioning = true;
+            const targetData = targetMesh.userData;
+            const overlay = document.getElementById('fade-overlay');
+            
+            const targetPos = new THREE.Vector3();
+            targetMesh.getWorldPosition(targetPos);
+            
+            const popStarsCount = 10;
+            for(let i=0; i<popStarsCount; i++) {
+                const ps = new THREE.Mesh(basicStarGeo, basicWhiteMat);
+                ps.scale.set(0.06, 0.06, 0.06);
+                ps.position.copy(targetPos);
+                scene.add(ps);
+                
+                const randomAngle = Math.random() * Math.PI * 2;
+                const randomY = (Math.random() - 0.5) * 2;
+                const radius = 1.2 + Math.random();
+                
+                gsap.to(ps.position, {
+                    x: targetPos.x + Math.cos(randomAngle) * radius,
+                    y: targetPos.y + randomY * radius,
+                    z: targetPos.z + Math.sin(randomAngle) * radius,
+                    duration: 0.6 + Math.random()*0.3,
+                    ease: "power2.out"
+                });
+                gsap.to(ps.rotation, {
+                    x: Math.random() * Math.PI * 4,
+                    y: Math.random() * Math.PI * 4,
+                    duration: 0.8
+                });
+                gsap.to(ps.scale, {
+                    x: 0, y: 0, z: 0,
+                    duration: 0.3, delay: 0.3 + Math.random()*0.2, ease: "back.in(2)",
+                    onComplete: () => scene.remove(ps)
+                });
+            }
+            
+            const zoomDist = 1.5; 
+            gsap.to(camera.position, {
+                x: targetPos.x,
+                y: targetPos.y,
+                z: targetPos.z + zoomDist,
+                duration: 1.5,
+                ease: "power3.in"
+            });
+
+            setTimeout(() => {
+                overlay.style.backgroundColor = "#000000";
+                overlay.style.opacity = 1;
+                
+                setTimeout(() => {
+                    window.location.href = targetData.url;
+                }, 1500);
+            }, 800);
+        }
+
         window.addEventListener('click', (e) => {
             if (hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav')) {
-                isTransitioning = true;
-                const targetData = hoveredObject.userData;
-                const overlay = document.getElementById('fade-overlay');
-                
-                const targetPos = new THREE.Vector3();
-                hoveredObject.getWorldPosition(targetPos);
-                
-                const popStarsCount = 10;
-                for(let i=0; i<popStarsCount; i++) {
-                    const ps = new THREE.Mesh(basicStarGeo, basicWhiteMat);
-                    ps.scale.set(0.06, 0.06, 0.06);
-                    ps.position.copy(targetPos);
-                    scene.add(ps);
-                    
-                    const randomAngle = Math.random() * Math.PI * 2;
-                    const randomY = (Math.random() - 0.5) * 2;
-                    const radius = 1.2 + Math.random();
-                    
-                    gsap.to(ps.position, {
-                        x: targetPos.x + Math.cos(randomAngle) * radius,
-                        y: targetPos.y + randomY * radius,
-                        z: targetPos.z + Math.sin(randomAngle) * radius,
-                        duration: 0.6 + Math.random()*0.3,
-                        ease: "power2.out"
-                    });
-                    gsap.to(ps.rotation, {
-                        x: Math.random() * Math.PI * 4,
-                        y: Math.random() * Math.PI * 4,
-                        duration: 0.8
-                    });
-                    gsap.to(ps.scale, {
-                        x: 0, y: 0, z: 0,
-                        duration: 0.3, delay: 0.3 + Math.random()*0.2, ease: "back.in(2)",
-                        onComplete: () => scene.remove(ps)
-                    });
-                }
-                
-                const zoomDist = 1.5; 
-                gsap.to(camera.position, {
-                    x: targetPos.x,
-                    y: targetPos.y,
-                    z: targetPos.z + zoomDist,
-                    duration: 1.5,
-                    ease: "power3.in"
-                });
+                execTransition(hoveredObject);
+            }
+        });
 
-                setTimeout(() => {
-                    overlay.style.backgroundColor = "#000000";
-                    overlay.style.opacity = 1;
-                    
-                    setTimeout(() => {
-                        window.location.href = targetData.url;
-                    }, 1500);
-                }, 800);
+        navTitle.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && currentFrontObj && !isTransitioning) {
+                execTransition(currentFrontObj);
             }
         });
 
@@ -808,6 +851,32 @@
                     obj.mesh.rotation.x += 0.01;
                     obj.mesh.rotation.y += 0.015;
                 });
+            }
+
+            if (window.innerWidth <= 768 && !isTransitioning) {
+                let maxZ = -Infinity;
+                let frontObj = null;
+                const tempPos = new THREE.Vector3();
+                
+                objectsData.forEach(obj => {
+                    obj.mesh.getWorldPosition(tempPos);
+                    if (tempPos.z > maxZ) {
+                        maxZ = tempPos.z;
+                        frontObj = obj;
+                    }
+                });
+
+                if (frontObj && currentFrontObj !== frontObj.mesh) {
+                    currentFrontObj = frontObj.mesh;
+                    navTitle.innerText = frontObj.name;
+                    navTitle.style.color = "#FFEA00";
+                    navTitle.style.textShadow = "0 0 25px rgba(255, 234, 0, 1)";
+                }
+            } else if (window.innerWidth > 768 && !hoveredObject && navTitle.innerText !== "EXPLORE") {
+                navTitle.innerText = "EXPLORE";
+                navTitle.style.color = "#ffffff";
+                navTitle.style.textShadow = "0 0 15px rgba(255, 255, 255, 0.6)";
+                currentFrontObj = null;
             }
 
             starField.rotation.y = time * 0.02;
