@@ -114,6 +114,32 @@
             filter: contrast(1.2) saturate(1.3) sepia(0.15); transition: filter 0.1s;
         }
 
+        #yellow-panel-left {
+            position: absolute; top: 0; left: 0; width: 320px; height: 100%;
+            background-color: #FFB300; z-index: 7900; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.6); padding: 40px 20px 20px 20px; border-right: 4px solid #111;
+        }
+
+        .panel-left-img {
+            width: 112px; height: 112px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
+        }
+
+        .desc-container {
+            width: 240px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 50px; position: relative; z-index: 8010;
+        }
+
+        .desc-text {
+            font-size: 16px; text-align: justify; text-align-last: center; line-height: 1.6; font-family: 'Aztro', sans-serif; text-transform: uppercase;
+        }
+        
+        .desc-p1 { color: #111; margin-bottom: 15px; }
+        .desc-p2 { color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+
+        .copyright-box {
+            height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #111; text-align: center; line-height: 1.4; font-family: 'Aztro', sans-serif; position: relative; z-index: 8010; padding-bottom: 20px;
+        }
+
         #yellow-panel {
             position: absolute; top: 0; right: 0; width: 320px; height: 100%;
             background-color: #FFB300; z-index: 7900; 
@@ -177,15 +203,7 @@
             font-family: 'Aztro', sans-serif; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         }
 
-        .contact-item span {
-            position: absolute; top: 45px; font-size: 1rem; font-weight: normal; opacity: 0;
-            transform: scale(0.5); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: #FFB300; text-transform: uppercase; letter-spacing: 2px; pointer-events: none; white-space: nowrap;
-            text-shadow: 0 0 8px #FFB300;
-        }
-
         .contact-item:hover { color: #FFB300; transform: scale(1.25) skew(-5deg); text-shadow: 0 0 15px #FFB300; }
-        .contact-item:hover span { opacity: 1; transform: scale(1); }
 
         @keyframes pulse-text { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
         @keyframes crt-flicker { 0% { opacity: 0.94; } 50% { opacity: 1; } 100% { opacity: 0.96; } }
@@ -338,14 +356,18 @@
 
         @media (max-width: 768px) {
             #yellow-panel { width: 160px; padding: 15px; }
+            #yellow-panel-left { width: 160px; padding: 15px; }
             .panel-svg { width: 50px; height: 50px; }
+            .panel-left-img { width: 80px; height: 80px; margin-top: 15px; margin-bottom: 15px; }
             .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
+            .desc-container { width: 120px; height: 160px; margin-bottom: 20px; }
+            .desc-text { font-size: 11px; line-height: 1.4; }
+            .copyright-box { height: 40px; font-size: 9px; padding-bottom: 10px; }
             .move-btn { width: 40px; height: 40px; font-size: 16px; }
             #bottom-nav { bottom: 55px; gap: 15px; width: 100%; pointer-events: none; }
             #nav-title { font-size: 18pt; min-width: 220px; letter-spacing: 5px; pointer-events: auto; cursor: pointer; padding: 12px 25px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; border: 2px solid #FFB300; }
             #contact-area { top: 35px; gap: 0; width: 90%; padding: 0; justify-content: space-around; right: 80px; left: auto; transform: none; }
             .contact-item { font-size: 2.4rem; }
-            .contact-item span { display: none; }
             .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6)); }
             #circus-lights { top: 10px; left: 10px; right: 10px; bottom: 10px; }
         }
@@ -368,6 +390,21 @@
 
         <div id="aztro-canvas-container"></div>
 
+        <div id="yellow-panel-left">
+            <img src="az.svg" class="panel-left-img" alt="AZ">
+            <div class="desc-container">
+                <div class="desc-text desc-p1">
+                    Animator and illustrator with a degree in Graphic Design and Visual Communication.
+                </div>
+                <div class="desc-text desc-p2">
+                    Passionate about space themes and creating monsters, adapting to various topics while always giving them a unique essence.
+                </div>
+            </div>
+            <div class="copyright-box">
+                &copy; 2026 AZTROSHAPER.<br>ALL RIGHTS RESERVED.
+            </div>
+        </div>
+
         <div id="yellow-panel">
             <svg class="panel-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -389,32 +426,32 @@
         <div id="contact-area">
             <div class="contact-arc-wrapper" style="--rot: -35deg; --ty: 70px;">
                 <a href="https://instagram.com/aztroshaper" target="_blank" class="contact-item">
-                    <i class="fab fa-instagram"></i><span>Instagram</span>
+                    <i class="fab fa-instagram"></i>
                 </a>
             </div>
             <div class="contact-arc-wrapper" style="--rot: -21deg; --ty: 35px;">
                 <a href="https://instagram.com/direct/t/aztroshaper" target="_blank" class="contact-item">
-                    <i class="far fa-paper-plane"></i><span>Message</span>
+                    <i class="far fa-paper-plane"></i>
                 </a>
             </div>
             <div class="contact-arc-wrapper" style="--rot: -7deg; --ty: 10px;">
                 <a href="https://tiktok.com/@aztroshaper" target="_blank" class="contact-item">
-                    <i class="fab fa-tiktok"></i><span>TikTok</span>
+                    <i class="fab fa-tiktok"></i>
                 </a>
             </div>
             <div class="contact-arc-wrapper" style="--rot: 7deg; --ty: 10px;">
                 <a href="https://www.pi.fyi/u/aztroshaper" target="_blank" class="contact-item">
-                    <i class="fas fa-star"></i><span>Pi.fyi</span>
+                    <i class="fas fa-star"></i>
                 </a>
             </div>
             <div class="contact-arc-wrapper" style="--rot: 21deg; --ty: 35px;">
                 <a href="https://www.youtube.com/@Aztroshaper" target="_blank" class="contact-item">
-                    <i class="fab fa-youtube"></i><span>YouTube</span>
+                    <i class="fab fa-youtube"></i>
                 </a>
             </div>
             <div class="contact-arc-wrapper" style="--rot: 35deg; --ty: 70px;">
                 <a href="https://www.artstation.com/aztroshaper" target="_blank" class="contact-item">
-                    <i class="fab fa-artstation"></i><span>ArtStation</span>
+                    <i class="fab fa-artstation"></i>
                 </a>
             </div>
         </div>
@@ -754,7 +791,7 @@
         document.getElementById('btn-right').addEventListener('click', () => { dragVelocity = 0.15; });
 
         window.addEventListener('mousedown', (e) => {
-            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#yellow-panel') || isTransitioning) return;
+            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#yellow-panel') || e.target.closest('#yellow-panel-left') || isTransitioning) return;
             isDraggingOrbit = true; hasDragged = false; previousMouseX = e.clientX;
         });
 
@@ -796,7 +833,7 @@
         window.addEventListener('mouseleave', () => { isDraggingOrbit = false; });
 
         window.addEventListener('touchstart', (e) => {
-            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#yellow-panel') || isTransitioning) return;
+            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#yellow-panel') || e.target.closest('#yellow-panel-left') || isTransitioning) return;
             isDraggingOrbit = true; hasDragged = false; previousMouseX = e.touches[0].clientX;
         }, {passive: false});
         window.addEventListener('touchmove', (e) => {
@@ -837,7 +874,7 @@
         }
 
         window.addEventListener('click', (e) => {
-            if (currentView === 'aztro' && hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav') && !e.target.closest('#yellow-panel')) {
+            if (currentView === 'aztro' && hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav') && !e.target.closest('#yellow-panel') && !e.target.closest('#yellow-panel-left')) {
                 execTransition(hoveredObject);
             }
         });
