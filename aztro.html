@@ -68,6 +68,18 @@
             opacity: 1; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .picos-blancos-top {
+            position: absolute; top: 0; left: 0; width: 100%; height: 35px; background-color: white;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 95% 20%, 90% 100%, 85% 20%, 80% 100%, 75% 20%, 70% 100%, 65% 20%, 60% 100%, 55% 20%, 50% 100%, 45% 20%, 40% 100%, 35% 20%, 30% 100%, 25% 20%, 20% 100%, 15% 20%, 10% 100%, 5% 20%, 0% 100%);
+            z-index: 9000; pointer-events: none;
+        }
+
+        .linea-blanca { position: absolute; background-color: white; z-index: 8000; pointer-events: none; }
+        .linea-blanca.horizontal { height: 2px; }
+        .linea-blanca.vertical { width: 2px; }
+
+        .estrella-negra { position: absolute; z-index: 8000; pointer-events: none; }
+
         #circus-lights {
             position: absolute;
             top: 50%; left: 50%;
@@ -117,11 +129,11 @@
         }
 
         .panel-left-img {
-            width: 230px; height: 230px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
+            width: 320px; height: 320px; position: absolute; top: 20px; left: 20px; filter: brightness(0); object-fit: contain; z-index: 8020;
         }
 
         .desc-container {
-            width: 230px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 50px; position: relative; z-index: 8010;
+            width: 230px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 300px; margin-bottom: 50px; position: relative; z-index: 8010;
         }
 
         .desc-text {
@@ -132,7 +144,7 @@
         .desc-p2 { color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
 
         .copyright-box {
-            height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #111; text-align: center; line-height: 1.4; font-family: 'Aztro', sans-serif; position: relative; z-index: 8010; padding-bottom: 20px;
+            height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #111; text-align: center; line-height: 1.4; font-family: 'Aztro', sans-serif; position: relative; z-index: 8010; padding-bottom: 20px; margin-top: 30px;
         }
 
         #yellow-panel {
@@ -179,6 +191,9 @@
         .move-btn:hover {
             background: #111; color: #FFB300; transform: scale(1.1);
         }
+
+        #btn-left { position: relative; left: -15px; top: -5px; }
+        #btn-right { position: relative; right: -15px; top: -5px; }
 
         #bottom-nav {
             position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
@@ -384,11 +399,11 @@
                 background: radial-gradient(circle 80px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
             }
             .panel-svg { width: 50px; height: 50px; }
-            .panel-left-img { width: 120px; height: 120px; margin-top: 15px; margin-bottom: 15px; }
+            .panel-left-img { width: 150px; height: 150px; position: absolute; top: 10px; left: 10px; margin-top: 0; margin-bottom: 0; }
             .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
-            .desc-container { width: 120px; height: 160px; margin-bottom: 20px; }
+            .desc-container { width: 120px; height: 160px; margin-top: 140px; margin-bottom: 20px; }
             .desc-text { font-size: 11px; line-height: 1.4; }
-            .copyright-box { height: 40px; font-size: 9px; padding-bottom: 10px; }
+            .copyright-box { height: 40px; font-size: 9px; padding-bottom: 10px; margin-top: 15px; }
             .move-btn { width: 40px; height: 40px; font-size: 16px; }
             #bottom-nav { bottom: 55px; gap: 15px; width: 100%; pointer-events: none; }
             #nav-title { font-size: 10pt; letter-spacing: 5px; pointer-events: auto; cursor: pointer; }
@@ -404,6 +419,16 @@
 
     <div id="aztro-view">
         <div id="fade-overlay"></div>
+        <div class="picos-blancos-top"></div>
+        
+        <div class="linea-blanca horizontal" style="top: 25%; left: 5%; width: 200px;"></div>
+        <div class="linea-blanca vertical" style="top: 40%; right: 10%; height: 150px;"></div>
+        <div class="linea-blanca horizontal" style="bottom: 15%; right: 25%; width: 120px;"></div>
+        
+        <img src="st.svg" class="estrella-negra" style="top: 15%; left: 75%; width: 25px;" alt="Star">
+        <img src="st.svg" class="estrella-negra" style="top: 60%; left: 15%; width: 20px;" alt="Star">
+        <img src="st.svg" class="estrella-negra" style="top: 80%; left: 85%; width: 30px;" alt="Star">
+
         <div id="circus-lights"></div>
 
         <div id="aztro-canvas-container"></div>
@@ -418,9 +443,6 @@
                     Passionate about space themes and creating creepy monsters, adapting to various topics while always giving them a unique essence.
                 </div>
             </div>
-            <div class="copyright-box">
-                &copy; 2026 AZTROSHAPER.<br>ALL RIGHTS RESERVED.
-            </div>
         </div>
 
         <div id="yellow-panel">
@@ -434,6 +456,9 @@
             <div class="movement-controls">
                 <button class="move-btn" id="btn-left"><i class="fas fa-chevron-left"></i></button>
                 <button class="move-btn" id="btn-right"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="copyright-box">
+                &copy; 2026 AZTROSHAPER.<br>ALL RIGHTS RESERVED.
             </div>
         </div>
 
