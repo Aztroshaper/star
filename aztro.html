@@ -41,6 +41,11 @@
             -webkit-user-drag: none;
         }
 
+        #anti-ss {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000; z-index: 999999; opacity: 0; pointer-events: none;
+        }
+
         #aztro-view {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 1000;
@@ -116,13 +121,13 @@
 
         #yellow-panel-left {
             position: absolute; top: 0; left: 0; width: 320px; height: 100%;
-            background-color: #FFB300; z-index: 7900; 
+            background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 10px 0 30px rgba(0,0,0,0.6); padding: 40px 20px 20px 20px; border-right: 4px solid #111;
         }
 
         .panel-left-img {
-            width: 112px; height: 112px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
+            width: 246px; height: 246px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
         }
 
         .desc-container {
@@ -130,7 +135,7 @@
         }
 
         .desc-text {
-            font-size: 16px; text-align: justify; text-align-last: center; line-height: 1.6; font-family: 'Aztro', sans-serif; text-transform: uppercase;
+            font-size: 16px; text-align: justify; line-height: 1.6; font-family: 'Aztro', sans-serif; text-transform: uppercase;
         }
         
         .desc-p1 { color: #111; margin-bottom: 15px; }
@@ -142,7 +147,7 @@
 
         #yellow-panel {
             position: absolute; top: 0; right: 0; width: 320px; height: 100%;
-            background-color: #FFB300; z-index: 7900; 
+            background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: -10px 0 30px rgba(0,0,0,0.6); padding: 20px; border-left: 4px solid #111;
         }
@@ -183,9 +188,15 @@
         }
 
         #nav-title {
-            color: #ffffff; font-size: 22pt; font-family: 'Aztro', sans-serif; font-weight: normal; 
+            color: #ffffff; font-size: 14pt; font-family: 'Aztro', sans-serif; font-weight: normal; 
             text-transform: uppercase; letter-spacing: 8px; min-width: 250px; text-align: center; 
             transition: all 0.3s ease; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: smoothFade 3s ease-in-out infinite;
+        }
+
+        @keyframes smoothFade {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 1; }
         }
 
         #contact-area {
@@ -321,9 +332,11 @@
         @keyframes stripeMove { 0% { background-position: 0 0; } 100% { background-position: 60px 0; } }
 
         .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: auto; padding-bottom: 20px; }
-        .grid-item { aspect-ratio: 1; border-radius: 15px; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; border: 2px solid #000; }
+        .grid-item-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+        .grid-item { width: 100%; aspect-ratio: 1; border-radius: 15px; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; border: 2px solid #000; }
         .grid-item:hover { transform: scale(1.03); border-color: #FFB300; box-shadow: 0 10px 25px rgba(255, 179, 0, 0.3); }
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .like-text { color: #111; font-family: 'Aztro', sans-serif; font-size: 15px; text-transform: uppercase; text-align: center; font-weight: bold; }
 
         .ref-container { display: flex; flex-direction: column; gap: 25px; padding-bottom: 20px; }
         .ref-item { display: flex; flex-direction: column; background: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.08); transition: transform 0.3s ease; border: 3px solid #000; }
@@ -358,14 +371,14 @@
             #yellow-panel { width: 160px; padding: 15px; }
             #yellow-panel-left { width: 160px; padding: 15px; }
             .panel-svg { width: 50px; height: 50px; }
-            .panel-left-img { width: 80px; height: 80px; margin-top: 15px; margin-bottom: 15px; }
+            .panel-left-img { width: 176px; height: 176px; margin-top: 15px; margin-bottom: 15px; }
             .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
             .desc-container { width: 120px; height: 160px; margin-bottom: 20px; }
             .desc-text { font-size: 11px; line-height: 1.4; }
             .copyright-box { height: 40px; font-size: 9px; padding-bottom: 10px; }
             .move-btn { width: 40px; height: 40px; font-size: 16px; }
             #bottom-nav { bottom: 55px; gap: 15px; width: 100%; pointer-events: none; }
-            #nav-title { font-size: 18pt; min-width: 220px; letter-spacing: 5px; pointer-events: auto; cursor: pointer; padding: 12px 25px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; border: 2px solid #FFB300; }
+            #nav-title { font-size: 10pt; min-width: 220px; letter-spacing: 5px; pointer-events: auto; cursor: pointer; padding: 12px 25px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; border: 2px solid #FFB300; }
             #contact-area { top: 35px; gap: 0; width: 90%; padding: 0; justify-content: space-around; right: 80px; left: auto; transform: none; }
             .contact-item { font-size: 2.4rem; }
             .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6)); }
@@ -374,6 +387,8 @@
     </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+
+    <div id="anti-ss"></div>
 
     <div id="aztro-view">
         <div id="fade-overlay"></div>
@@ -397,7 +412,7 @@
                     Animator and illustrator with a degree in Graphic Design and Visual Communication.
                 </div>
                 <div class="desc-text desc-p2">
-                    Passionate about space themes and creating monsters, adapting to various topics while always giving them a unique essence.
+                    Passionate about space themes and creating creepy monsters, adapting to various topics while always giving them a unique essence.
                 </div>
             </div>
             <div class="copyright-box">
@@ -751,10 +766,10 @@
         applyMayaMode(clapGroup);
 
         const objectsData = [
-            { mesh: starMesh, name: "ABOUT ME" },
-            { mesh: pencilGroup, name: "ILLUSTRATIONS" },
-            { mesh: rubikGroup, name: "3D MODELS" },
-            { mesh: clapGroup, name: "ANIMATION" }
+            { mesh: starMesh, name: "ABOUT ME", url: null },
+            { mesh: pencilGroup, name: "ILLUSTRATIONS", url: "ilu.html" },
+            { mesh: rubikGroup, name: "3D MODELS", url: "3d.html" },
+            { mesh: clapGroup, name: "ANIMATION", url: "ani.html" }
         ];
 
         objectsData.forEach((obj) => {
@@ -875,11 +890,21 @@
 
         window.addEventListener('click', (e) => {
             if (currentView === 'aztro' && hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav') && !e.target.closest('#yellow-panel') && !e.target.closest('#yellow-panel-left')) {
-                execTransition(hoveredObject);
+                if (hoveredObject.userData.url) {
+                    window.location.href = hoveredObject.userData.url;
+                } else {
+                    execTransition(hoveredObject);
+                }
             }
         });
         navTitle.addEventListener('click', (e) => {
-            if (currentView === 'aztro' && window.innerWidth <= 768 && currentFrontObj && !isTransitioning) execTransition(currentFrontObj);
+            if (currentView === 'aztro' && window.innerWidth <= 768 && currentFrontObj && !isTransitioning) {
+                if (currentFrontObj.userData.url) {
+                    window.location.href = currentFrontObj.userData.url;
+                } else {
+                    execTransition(currentFrontObj);
+                }
+            }
         });
 
         let glitchFramesRemaining = 0;
@@ -914,6 +939,12 @@
         aboutPencil.rotation.y = Math.PI / 4; 
         aboutPencil.rotation.x = Math.PI / 6;
         aboutScene.add(aboutPencil);
+
+        const matteSphereGeo = new THREE.SphereGeometry(80, 32, 32);
+        const matteSphereMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, metalness: 0.0 });
+        const whiteSphere = new THREE.Mesh(matteSphereGeo, matteSphereMat);
+        whiteSphere.position.set(650, -600, 150); 
+        aboutScene.add(whiteSphere);
 
         const leftGroup = new THREE.Group(); leftGroup.position.x = -430; leftGroup.rotation.y = 0.14;
         const leftCover = new CSS3DObject(Object.assign(document.createElement('div'), {className: 'book-cover cover-left'}));
@@ -961,7 +992,15 @@
                 bio: "Digital Artist & Animator (@aztroshaper). With a primary focus on illustration and 2D animation, my work revolves around dynamic character design and engaging visual narratives. Driven by continuous creative development, I also integrate stop-motion and 3D modeling into my pipeline to further expand the boundaries of digital storytelling.",
                 skills: [{ name: "Illustration", percent: 95 }, { name: "Animation", percent: 90 }, { name: "Stop-Motion", percent: 60 }, { name: "3D Modeling", percent: 40 }]
             },
-            { type: "gallery", title: "LIKES", gifs: ["2.gif", "3.gif", "4.gif", "5.gif"] },
+            { 
+                type: "gallery", title: "LIKES", 
+                items: [
+                    { src: "like1.gif", text: "horror stuff" },
+                    { src: "like2.gif", text: "space" },
+                    { src: "like3.gif", text: "biology/deep sea creatures" },
+                    { src: "like4.gif", text: "dreamcore" }
+                ] 
+            },
             { 
                 type: "references", title: "REFERENCES",
                 items: [
@@ -1002,7 +1041,9 @@
                 contentElement.innerHTML = html + '</div>';
             } else if (data.type === "gallery") {
                 let gridHTML = '<div class="grid-container">';
-                data.gifs.forEach(gifName => { gridHTML += `<div class="grid-item"><img src="${gifName}" alt="Content"></div>`; });
+                data.items.forEach(item => { 
+                    gridHTML += `<div class="grid-item-wrapper"><div class="grid-item"><img src="${item.src}" alt="Content"></div><div class="like-text">${item.text}</div></div>`; 
+                });
                 contentElement.innerHTML = gridHTML + '</div>';
             } else if (data.type === "references") {
                 let refHTML = '<div class="ref-container">';
@@ -1093,6 +1134,8 @@
                 aboutPencil.position.y = Math.sin(time * 2) * 25;
                 aboutPencil.rotation.x = (Math.PI / 6) + Math.sin(time * 1.5) * 0.05;
 
+                whiteSphere.position.y = -600 + Math.sin(time * 3) * 20;
+
                 cssRenderer.render(aboutScene, aboutCamera);
                 aboutWebglRenderer.render(aboutScene, aboutCamera);
             }
@@ -1106,6 +1149,23 @@
             aboutCamera.aspect = window.innerWidth / window.innerHeight; aboutCamera.updateProjectionMatrix();
             cssRenderer.setSize(window.innerWidth, window.innerHeight);
             aboutWebglRenderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.addEventListener('keyup', e => { 
+            if(e.key === 'PrintScreen') { 
+                document.getElementById('anti-ss').style.opacity = 1; 
+                setTimeout(()=>document.getElementById('anti-ss').style.opacity = 0, 1500); 
+            }
+        });
+        window.addEventListener('keydown', e => { 
+            if((e.ctrlKey || e.metaKey) && e.shiftKey && ['s','S','3','4','5'].includes(e.key)) { 
+                document.getElementById('anti-ss').style.opacity = 1; 
+                setTimeout(()=>document.getElementById('anti-ss').style.opacity = 0, 1500); 
+            }
+        });
+        document.addEventListener('visibilitychange', () => { 
+            if(document.hidden) document.getElementById('anti-ss').style.opacity = 1; 
+            else document.getElementById('anti-ss').style.opacity = 0; 
         });
     </script>
 </body>
