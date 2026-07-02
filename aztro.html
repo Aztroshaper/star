@@ -102,26 +102,26 @@
         }
 
         #yellow-panel-left {
-            position: absolute; top: 0; left: 0; width: 320px; height: 100%;
+            position: absolute; top: 0; left: 0; width: 420px; height: 100%;
             background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px 20px 20px 20px;
-            -webkit-mask: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, black 97.5%);
-            mask: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, black 97.5%);
+            padding: 40px 150px 20px 30px;
+            -webkit-mask: radial-gradient(circle 150px at 100% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(circle 150px at 100% 50%, transparent 97%, black 97.5%);
             filter: drop-shadow(10px 0 20px rgba(0,0,0,0.6));
         }
 
         #yellow-panel-left::after {
             content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+            background: radial-gradient(circle 150px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
         }
 
         .panel-left-img {
-            width: 246px; height: 246px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
+            width: 230px; height: 230px; margin-top: 30px; margin-bottom: 40px; filter: brightness(0); object-fit: contain; position: relative; z-index: 8010;
         }
 
         .desc-container {
-            width: 240px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 50px; position: relative; z-index: 8010;
+            width: 230px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 50px; position: relative; z-index: 8010;
         }
 
         .desc-text {
@@ -136,18 +136,18 @@
         }
 
         #yellow-panel {
-            position: absolute; top: 0; right: 0; width: 320px; height: 100%;
+            position: absolute; top: 0; right: 0; width: 420px; height: 100%;
             background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px;
-            -webkit-mask: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, black 97.5%);
-            mask: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, black 97.5%);
+            padding: 20px 30px 20px 150px;
+            -webkit-mask: radial-gradient(circle 150px at 0% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(circle 150px at 0% 50%, transparent 97%, black 97.5%);
             filter: drop-shadow(-10px 0 20px rgba(0,0,0,0.6));
         }
 
         #yellow-panel::after {
             content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+            background: radial-gradient(circle 150px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
         }
 
         .panel-svg {
@@ -155,7 +155,7 @@
         }
 
         .media-container {
-            width: 240px; height: 320px;
+            width: 230px; height: 310px;
             border-radius: 130px 130px 20px 20px;
             overflow: hidden; position: relative; margin-bottom: 50px;
         }
@@ -368,23 +368,23 @@
 
         @media (max-width: 768px) {
             #yellow-panel { 
-                width: 160px; padding: 15px; 
-                -webkit-mask: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, black 97.5%);
-                mask: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, black 97.5%);
+                width: 220px; padding: 15px 15px 15px 80px; 
+                -webkit-mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%);
+                mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%);
             }
             #yellow-panel::after {
-                background: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+                background: radial-gradient(circle 80px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
             }
             #yellow-panel-left { 
-                width: 160px; padding: 15px; 
-                -webkit-mask: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, black 97.5%);
-                mask: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, black 97.5%);
+                width: 220px; padding: 15px 80px 15px 15px; 
+                -webkit-mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%);
+                mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%);
             }
             #yellow-panel-left::after {
-                background: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+                background: radial-gradient(circle 80px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
             }
             .panel-svg { width: 50px; height: 50px; }
-            .panel-left-img { width: 176px; height: 176px; margin-top: 15px; margin-bottom: 15px; }
+            .panel-left-img { width: 120px; height: 120px; margin-top: 15px; margin-bottom: 15px; }
             .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
             .desc-container { width: 120px; height: 160px; margin-bottom: 20px; }
             .desc-text { font-size: 11px; line-height: 1.4; }
@@ -439,7 +439,7 @@
 
         <div id="bottom-nav">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150">
-                <path id="nav-curve" d="M 50,130 Q 400,10 750,130" fill="transparent" />
+                <path id="nav-curve" d="M 100,30 Q 400,140 700,30" fill="transparent" />
                 <text fill="currentColor" text-anchor="middle">
                     <textPath href="#nav-curve" startOffset="50%" id="nav-title">SCROLL OR CLICK THE 3D OBJECT</textPath>
                 </text>
