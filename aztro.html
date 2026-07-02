@@ -68,45 +68,27 @@
             opacity: 1; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .crt-monitor-overlay {
-            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
-            pointer-events: none; z-index: 8000;
-            animation: crt-flicker 0.1s infinite;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.95), inset 0 0 30px rgba(25, 25, 30, 0.5);
-        }
-
-        .crt-monitor-overlay::before {
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.6) 50%), 
-                        linear-gradient(90deg, rgba(255, 179, 0, 0.04), rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.04));
-            background-size: 100% 4px, 6px 100%; z-index: 8001; pointer-events: none;
-        }
-
-        #vhs-grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.18; z-index: 2; pointer-events: none; mix-blend-mode: overlay;
-        }
-
-        .tracking-distortion {
-            position: fixed; left: 0; width: 100%; height: 35px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(4px) contrast(250%) hue-rotate(45deg);
-            box-shadow: 0 -2px 10px rgba(255, 179, 0, 0.3), 0 2px 10px rgba(255, 255, 255, 0.3);
-            z-index: 3; animation: tracking-roll 6s infinite linear; pointer-events: none;
-        }
-
         #circus-lights {
-            position: fixed; top: 20px; left: 20px; right: 20px; bottom: 20px;
-            pointer-events: none; z-index: 8002;
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 65vmin; height: 65vmin;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
         }
-        .cl-row { position: absolute; left: 0; right: 0; display: flex; justify-content: space-between; height: 12px; }
-        .cl-top { top: 0; } .cl-bottom { bottom: 0; }
-        .cl-col { position: absolute; top: 25px; bottom: 25px; display: flex; flex-direction: column; justify-content: space-between; width: 12px; }
-        .cl-left { left: 0; } .cl-right { right: 0; }
+        
+        .circus-bulb-container {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 12px; height: 100%;
+            transform-origin: center center;
+        }
+
         .circus-bulb {
             width: 12px; height: 12px; border-radius: 50%; background: #FFB300;
             box-shadow: 0 0 10px #FFB300, 0 0 20px #FFB300;
             animation: bulb-blink 0.7s infinite alternate;
+            position: absolute; top: -6px;
         }
         .circus-bulb.even {
             background: #fff; box-shadow: 0 0 10px #fff, 0 0 20px #fff;
@@ -123,7 +105,15 @@
             position: absolute; top: 0; left: 0; width: 320px; height: 100%;
             background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.6); padding: 40px 20px 20px 20px; border-right: 4px solid #111;
+            padding: 40px 20px 20px 20px;
+            -webkit-mask: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, black 97.5%);
+            filter: drop-shadow(10px 0 20px rgba(0,0,0,0.6));
+        }
+
+        #yellow-panel-left::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(ellipse 120px 55% at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
         }
 
         .panel-left-img {
@@ -149,7 +139,15 @@
             position: absolute; top: 0; right: 0; width: 320px; height: 100%;
             background-color: #FFB300; z-index: 8010; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.6); padding: 20px; border-left: 4px solid #111;
+            padding: 20px;
+            -webkit-mask: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, black 97.5%);
+            filter: drop-shadow(-10px 0 20px rgba(0,0,0,0.6));
+        }
+
+        #yellow-panel::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(ellipse 120px 55% at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
         }
 
         .panel-svg {
@@ -183,15 +181,20 @@
         }
 
         #bottom-nav {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 30px; z-index: 8005; width: 90%; justify-content: center;
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; justify-content: center; z-index: 8005; width: 100%; max-width: 800px;
+        }
+
+        #bottom-nav svg {
+            width: 100%; height: 150px; overflow: visible; pointer-events: none;
         }
 
         #nav-title {
             color: #ffffff; font-size: 14pt; font-family: 'Aztro', sans-serif; font-weight: normal; 
-            text-transform: uppercase; letter-spacing: 8px; min-width: 250px; text-align: center; 
+            text-transform: uppercase; letter-spacing: 8px; 
             transition: all 0.3s ease; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             animation: smoothFade 3s ease-in-out infinite;
+            pointer-events: auto; cursor: pointer;
         }
 
         @keyframes smoothFade {
@@ -215,10 +218,6 @@
         }
 
         .contact-item:hover { color: #FFB300; transform: scale(1.25) skew(-5deg); text-shadow: 0 0 15px #FFB300; }
-
-        @keyframes pulse-text { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        @keyframes crt-flicker { 0% { opacity: 0.94; } 50% { opacity: 1; } 100% { opacity: 0.96; } }
-        @keyframes tracking-roll { 0% { top: -10%; } 8% { top: 110%; } 100% { top: 110%; } }
 
         #about-overlay {
             position: fixed; inset: 0; pointer-events: none; z-index: 10;
@@ -368,8 +367,22 @@
         #btn-close-about:hover { background: #FFB300; color: #000; transform: scale(1.15) rotate(90deg); box-shadow: 0 0 30px rgba(255,179,0,0.8); }
 
         @media (max-width: 768px) {
-            #yellow-panel { width: 160px; padding: 15px; }
-            #yellow-panel-left { width: 160px; padding: 15px; }
+            #yellow-panel { 
+                width: 160px; padding: 15px; 
+                -webkit-mask: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, black 97.5%);
+                mask: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, black 97.5%);
+            }
+            #yellow-panel::after {
+                background: radial-gradient(ellipse 60px 55% at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+            }
+            #yellow-panel-left { 
+                width: 160px; padding: 15px; 
+                -webkit-mask: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, black 97.5%);
+                mask: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, black 97.5%);
+            }
+            #yellow-panel-left::after {
+                background: radial-gradient(ellipse 60px 55% at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+            }
             .panel-svg { width: 50px; height: 50px; }
             .panel-left-img { width: 176px; height: 176px; margin-top: 15px; margin-bottom: 15px; }
             .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
@@ -378,11 +391,10 @@
             .copyright-box { height: 40px; font-size: 9px; padding-bottom: 10px; }
             .move-btn { width: 40px; height: 40px; font-size: 16px; }
             #bottom-nav { bottom: 55px; gap: 15px; width: 100%; pointer-events: none; }
-            #nav-title { font-size: 10pt; min-width: 220px; letter-spacing: 5px; pointer-events: auto; cursor: pointer; padding: 12px 25px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; border: 2px solid #FFB300; }
+            #nav-title { font-size: 10pt; letter-spacing: 5px; pointer-events: auto; cursor: pointer; }
             #contact-area { top: 35px; gap: 0; width: 90%; padding: 0; justify-content: space-around; right: 80px; left: auto; transform: none; }
             .contact-item { font-size: 2.4rem; }
             .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6)); }
-            #circus-lights { top: 10px; left: 10px; right: 10px; bottom: 10px; }
         }
     </style>
 </head>
@@ -392,16 +404,7 @@
 
     <div id="aztro-view">
         <div id="fade-overlay"></div>
-        <div class="crt-monitor-overlay"></div>
-        <canvas id="vhs-grain"></canvas>
-        <div class="tracking-distortion"></div>
-
-        <div id="circus-lights">
-            <div class="cl-row cl-top"></div>
-            <div class="cl-row cl-bottom"></div>
-            <div class="cl-col cl-left"></div>
-            <div class="cl-col cl-right"></div>
-        </div>
+        <div id="circus-lights"></div>
 
         <div id="aztro-canvas-container"></div>
 
@@ -435,7 +438,12 @@
         </div>
 
         <div id="bottom-nav">
-            <div id="nav-title">SCROLL OR CLICK THE 3D OBJECT</div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150">
+                <path id="nav-curve" d="M 50,130 Q 400,10 750,130" fill="transparent" />
+                <text fill="currentColor" text-anchor="middle">
+                    <textPath href="#nav-curve" startOffset="50%" id="nav-title">SCROLL OR CLICK THE 3D OBJECT</textPath>
+                </text>
+            </svg>
         </div>
 
         <div id="contact-area">
@@ -475,7 +483,6 @@
     <div id="about-view">
         <button id="btn-close-about"><i class="fas fa-times"></i></button>
         <div id="about-overlay"></div>
-        <div class="tracking-distortion"></div>
         <div id="about-canvas-container"></div>
         <div id="about-webgl-container"></div>
     </div>
@@ -525,36 +532,18 @@
             });
         }
 
-        const topRow = document.querySelector('.cl-top');
-        const bottomRow = document.querySelector('.cl-bottom');
-        const leftCol = document.querySelector('.cl-left');
-        const rightCol = document.querySelector('.cl-right');
-        
-        for(let i=0; i<45; i++) {
-            let b1 = document.createElement('div'); b1.className = 'circus-bulb' + (i%2===0?' even':'');
-            let b2 = document.createElement('div'); b2.className = 'circus-bulb' + (i%2!==0?' even':'');
-            topRow.appendChild(b1); bottomRow.appendChild(b2);
+        const circusLights = document.getElementById('circus-lights');
+        for (let i = 0; i < 60; i++) {
+            let container = document.createElement('div');
+            container.className = 'circus-bulb-container';
+            container.style.transform = `translateX(-50%) rotate(${(i / 60) * 360}deg)`;
+            
+            let bulb = document.createElement('div');
+            bulb.className = 'circus-bulb' + (i % 2 === 0 ? ' even' : '');
+            
+            container.appendChild(bulb);
+            circusLights.appendChild(container);
         }
-        for(let i=0; i<25; i++) {
-            let b3 = document.createElement('div'); b3.className = 'circus-bulb' + (i%2===0?' even':'');
-            let b4 = document.createElement('div'); b4.className = 'circus-bulb' + (i%2!==0?' even':'');
-            leftCol.appendChild(b3); rightCol.appendChild(b4);
-        }
-
-        const canvas = document.getElementById('vhs-grain');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 320; canvas.height = 320;
-        function renderNoise() {
-            const imgData = ctx.createImageData(canvas.width, canvas.height);
-            const buffer = new Uint32Array(imgData.data.buffer);
-            for (let i = 0; i < buffer.length; i++) {
-                const noise = (Math.random() * 255) | 0;
-                buffer[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
-            }
-            ctx.putImageData(imgData, 0, 0);
-            setTimeout(renderNoise, 50);
-        }
-        renderNoise();
 
         const aztroScene = new THREE.Scene();
         aztroScene.fog = new THREE.FogExp2(0x000000, 0.035);
@@ -570,7 +559,7 @@
 
         const planetGroup = new THREE.Group();
         const planetGeo = new THREE.IcosahedronGeometry(35, 3); 
-        const planetMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.9, metalness: 0.2, flatShading: true });
+        const planetMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, roughness: 0.9, metalness: 0.2, flatShading: true });
         const planet = new THREE.Mesh(planetGeo, planetMat);
         
         const atmosphereGeo = new THREE.IcosahedronGeometry(36, 3);
@@ -584,46 +573,6 @@
         const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
         sunLight.position.set(-60, 30, -50);
         aztroScene.add(sunLight);
-
-        const interiorGroup = new THREE.Group();
-        const shipPanelMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.8, metalness: 0.6 });
-        const metalTrimMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.9 });
-
-        const topWindowFrame = new THREE.Mesh(new THREE.BoxGeometry(140, 20, 20), shipPanelMat);
-        topWindowFrame.position.set(0, 32, -35); interiorGroup.add(topWindowFrame);
-
-        const bottomConsole = new THREE.Mesh(new THREE.BoxGeometry(140, 25, 40), shipPanelMat);
-        bottomConsole.position.set(0, -28, -25); bottomConsole.rotation.x = -0.2; interiorGroup.add(bottomConsole);
-
-        const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(4, 5, 80, 16), metalTrimMat);
-        leftPillar.position.set(-45, 0, -30); interiorGroup.add(leftPillar);
-
-        const rightPillar = new THREE.Mesh(new THREE.CylinderGeometry(4, 5, 80, 16), metalTrimMat);
-        rightPillar.position.set(45, 0, -30); interiorGroup.add(rightPillar);
-
-        const consoleLights = [];
-        for(let i=0; i<60; i++){
-            const isYellow = Math.random() > 0.5;
-            const btnMat = new THREE.MeshStandardMaterial({ 
-                color: isYellow ? 0xFFB300 : 0xffffff, 
-                emissive: isYellow ? 0xaa7700 : 0xaaaaaa,
-                emissiveIntensity: Math.random() * 2
-            });
-            const btn = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 1.5), btnMat);
-            btn.position.set((Math.random() - 0.5) * 80, 12.5, (Math.random() - 0.5) * 15);
-            btn.rotation.y = Math.random();
-            bottomConsole.add(btn);
-            consoleLights.push({ mesh: btn, baseIntensity: btnMat.emissiveIntensity, speed: Math.random() * 5 });
-        }
-        aztroScene.add(interiorGroup);
-
-        const starsGeo = new THREE.BufferGeometry();
-        const starsMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.06, transparent: true, opacity: 0.8});
-        const starsVerts = [];
-        for(let i=0; i<1500; i++) starsVerts.push((Math.random()-0.5)*150, (Math.random()-0.5)*150, (Math.random()-0.5)*150);
-        starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starsVerts, 3));
-        const starField = new THREE.Points(starsGeo, starsMat);
-        aztroScene.add(starField);
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); aztroScene.add(ambientLight);
         const dirLight = new THREE.DirectionalLight(0xffffff, 1.5); dirLight.position.set(5, 5, 5); aztroScene.add(dirLight);
@@ -829,7 +778,7 @@
                     hoveredObject = mainMesh;
                     if(!hoveredObject.userData.initialScaleX) { hoveredObject.userData.initialScaleX = hoveredObject.scale.x; hoveredObject.userData.initialScaleY = hoveredObject.scale.y; hoveredObject.userData.initialScaleZ = hoveredObject.scale.z; }
                     gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX * 1.4, y: hoveredObject.userData.initialScaleY * 1.4, z: hoveredObject.userData.initialScaleZ * 1.4, duration: 0.4, ease: "elastic.out(1, 0.5)" });
-                    if (window.innerWidth > 768) { navTitle.innerText = hoveredObject.userData.name; navTitle.style.color = "#FFB300"; navTitle.style.textShadow = "0 0 25px rgba(255, 179, 0, 1)"; }
+                    if (window.innerWidth > 768) { navTitle.textContent = hoveredObject.userData.name; navTitle.style.color = "#FFB300"; navTitle.style.textShadow = "0 0 25px rgba(255, 179, 0, 1)"; }
                     document.body.style.cursor = 'pointer';
                     hoverSpotlight.intensity = 120; 
                 }
@@ -837,7 +786,7 @@
                 if (hoveredObject) {
                     gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX, y: hoveredObject.userData.initialScaleY, z: hoveredObject.userData.initialScaleZ, duration: 0.3 });
                     hoveredObject = null;
-                    if (window.innerWidth > 768) { navTitle.innerText = "SCROLL OR CLICK THE 3D OBJECT"; navTitle.style.color = "#ffffff"; navTitle.style.textShadow = "0 0 10px rgba(255, 255, 255, 0.5)"; }
+                    if (window.innerWidth > 768) { navTitle.textContent = "SCROLL OR CLICK THE 3D OBJECT"; navTitle.style.color = "#ffffff"; navTitle.style.textShadow = "0 0 10px rgba(255, 255, 255, 0.5)"; }
                     hoverSpotlight.intensity = 0;
                 }
                 document.body.style.cursor = isDraggingOrbit ? 'grabbing' : 'default';
@@ -873,37 +822,33 @@
             gsap.to(aztroCamera.position, { x: targetPos.x, y: targetPos.y, z: targetPos.z + 1.5, duration: 1.5, ease: "power3.in" });
 
             setTimeout(() => {
-                const aztroView = document.getElementById('aztro-view');
-                const aboutView = document.getElementById('about-view');
-                
-                aztroView.style.opacity = 0;
-                aztroView.style.pointerEvents = 'none';
-                aboutView.style.pointerEvents = 'auto';
-                
-                setTimeout(() => {
-                    aboutView.style.opacity = 1;
-                    currentView = 'about';
-                    isTransitioning = false;
-                }, 500);
+                if (targetMesh.userData.url) {
+                    window.location.href = targetMesh.userData.url;
+                } else {
+                    const aztroView = document.getElementById('aztro-view');
+                    const aboutView = document.getElementById('about-view');
+                    
+                    aztroView.style.opacity = 0;
+                    aztroView.style.pointerEvents = 'none';
+                    aboutView.style.pointerEvents = 'auto';
+                    
+                    setTimeout(() => {
+                        aboutView.style.opacity = 1;
+                        currentView = 'about';
+                        isTransitioning = false;
+                    }, 500);
+                }
             }, 1200);
         }
 
         window.addEventListener('click', (e) => {
             if (currentView === 'aztro' && hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav') && !e.target.closest('#yellow-panel') && !e.target.closest('#yellow-panel-left')) {
-                if (hoveredObject.userData.url) {
-                    window.location.href = hoveredObject.userData.url;
-                } else {
-                    execTransition(hoveredObject);
-                }
+                execTransition(hoveredObject);
             }
         });
         navTitle.addEventListener('click', (e) => {
             if (currentView === 'aztro' && window.innerWidth <= 768 && currentFrontObj && !isTransitioning) {
-                if (currentFrontObj.userData.url) {
-                    window.location.href = currentFrontObj.userData.url;
-                } else {
-                    execTransition(currentFrontObj);
-                }
+                execTransition(currentFrontObj);
             }
         });
 
@@ -1092,7 +1037,6 @@
             if(currentView === 'aztro') {
                 dragVelocity *= 0.95; manualRotationOffset += dragVelocity;
                 planetGroup.rotation.y += 0.0005; planetGroup.rotation.x = Math.sin(time * 0.1) * 0.05;
-                consoleLights.forEach(light => { light.mesh.material.emissiveIntensity = light.baseIntensity + Math.sin(time * light.speed) * 0.5; });
                 
                 orbitLight.position.x = Math.sin(time) * 6; orbitLight.position.z = Math.cos(time) * 6; orbitLight.position.y = Math.sin(time * 0.5) * 3;
                 
@@ -1127,7 +1071,6 @@
                         canvasContainer.style.filter = `contrast(1.2) saturate(1.3) sepia(0.15)`;
                     }
                 }
-                starField.rotation.y = time * 0.02;
                 webglRenderer.render(aztroScene, aztroCamera);
             } 
             else if (currentView === 'about') {
