@@ -1,415 +1,1217 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23FFFFFF' d='M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z'/></svg>">
-  <style>
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-    }
-
-    body, html {
-      width: 100%; height: 100%;
-      background-color: #000;
-      overflow: hidden;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex; justify-content: center; align-items: center;
-      
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .crt-monitor {
-      position: relative; width: 100%; height: 100%;
-      background: #050505;
-      display: flex; justify-content: center; align-items: center;
-      overflow: hidden;
-      animation: crt-flicker 0.2s infinite;
-    }
-
-    .crt-monitor::before {
-      content: " "; display: block; position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
-                  linear-gradient(90deg, rgba(255, 234, 0, 0.02), rgba(255, 255, 255, 0.02), rgba(255, 234, 0, 0.02));
-      background-size: 100% 3px, 6px 100%;
-      z-index: 10; pointer-events: none;
-    }
-
-    .crt-monitor::after {
-      content: " "; display: block; position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 100%);
-      z-index: 11; pointer-events: none;
-    }
-
-    #vhs-grain {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0.08; z-index: 2; pointer-events: none;
-    }
-
-    .tracking-distortion {
-      position: absolute; left: 0; width: 100%; height: 20px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(1px) contrast(150%);
-      z-index: 3; animation: tracking-roll 8s infinite linear;
-      pointer-events: none;
-    }
-
-    .scene {
-      position: relative; z-index: 5;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      width: 100%; height: 100%; transform: scale(0.95);
-    }
-
-    .logo-perspective {
-      perspective: 2000px; 
-      margin-bottom: 70px; 
-      position: relative;
-    }
-
-    .logo-3d-master {
-      position: relative; width: 480px; height: 480px;
-      transform-style: preserve-3d; transition: transform 0.1s ease-out;
-    }
-
-    .logo-idle-float {
-      position: relative; width: 100%; height: 100%;
-      transform-style: preserve-3d;
-      animation: vhs-float 4s ease-in-out infinite alternate;
-    }
-
-    .logo-layer {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: url('az.svg') no-repeat center/contain;
-      transform-style: preserve-3d; pointer-events: none;
-    }
-
-    .logo-front {
-      filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
-    }
-
-    .logo-liquid {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: url('az.svg') no-repeat center/contain;
-      clip-path: inset(100% 0 0 0);
-      transform: translateZ(2px);
-      transition: clip-path 0.1s linear;
-      filter: brightness(0) saturate(100%) invert(86%) sepia(87%) saturate(1512%) hue-rotate(352deg) brightness(105%) contrast(105%) drop-shadow(0 0 20px rgba(255, 234, 0, 0.6));
-    }
-
-    #burst-container {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 0; height: 0;
-      z-index: 20;
-      pointer-events: none;
-    }
-
-    .burst-star {
-      position: absolute;
-      width: 25px; height: 25px;
-      top: -12.5px; left: -12.5px;
-      fill: #FFEA00;
-      opacity: 0;
-      transform-origin: center;
-    }
-
-    .burst-star.animate {
-      animation: burst-anim 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-
-    .loading-interface {
-      display: flex; flex-direction: column; align-items: center; gap: 25px;
-    }
-
-    .stars-track {
-      display: flex; gap: 18px; position: relative;
-    }
-
-    .star-icon {
-      width: 30px; height: 30px;
-      fill: #151515; transition: fill 0.2s, filter 0.2s;
-    }
-
-    .star-icon.active {
-      fill: #FFEA00;
-      animation: star-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-                 star-levitate 1.5s ease-in-out 0.8s infinite alternate;
-    }
-
-    .status-text-container {
-      height: 35px; display: flex; justify-content: center; align-items: center;
-      animation: text-float 3s ease-in-out infinite alternate;
-    }
-
-    .status-text {
-      color: #ffffff; font-size: 13pt; letter-spacing: 18px;
-      text-transform: uppercase; text-align: center; font-weight: bold;
-      opacity: 0; transform: translateY(30px) scale(0.8); filter: blur(8px);
-      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .status-text.visible {
-      opacity: 0.95; transform: translateY(0) scale(1);
-      letter-spacing: 5px; filter: blur(0);
-    }
-
-    .star-glow {
-      color: #FFEA00; font-weight: bold;
-      text-shadow: 0 0 15px rgba(255, 234, 0, 1), 0 0 30px rgba(255, 234, 0, 0.6);
-      display: inline-block;
-      animation: pulse-glow 1s infinite alternate;
-    }
-
-    #master-fade {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: #000; z-index: 999; pointer-events: none;
-      opacity: 1; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @media (max-width: 768px) {
-      .logo-3d-master { width: 420px; height: 420px; }
-      .logo-perspective { margin-bottom: 60px; }
-      .loading-interface { gap: 20px; }
-      .stars-track { gap: 14px; }
-      .star-icon { width: 34px; height: 34px; }
-      .status-text { font-size: 14pt; letter-spacing: 6px; }
-      .status-text.visible { letter-spacing: 4px; }
-      .burst-star { width: 25px; height: 25px; top: -12.5px; left: -12.5px; }
-    }
-
-    @media (max-width: 480px) {
-      .logo-3d-master { width: 320px; height: 320px; }
-      .logo-perspective { margin-bottom: 40px; }
-      .status-text { font-size: 12pt; letter-spacing: 4px; }
-      .status-text.visible { letter-spacing: 2px; }
-      .star-icon { width: 26px; height: 26px; }
-      .stars-track { gap: 6px; }
-    }
-
-    @keyframes burst-anim {
-      0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 5px #FFEA00); }
-      50% { opacity: 1; filter: drop-shadow(0 0 15px #FFEA00); }
-      100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg); opacity: 0; filter: drop-shadow(0 0 5px #FFEA00); }
-    }
-
-    @keyframes star-pop {
-      0% { transform: scale(0.5) rotate(-90deg); fill: #1a1a1a; }
-      40% { transform: scale(2.2) rotate(180deg); fill: #fff; filter: drop-shadow(0 0 25px #fff); }
-      70% { transform: scale(0.9) rotate(380deg); fill: #FFEA00; }
-      100% { transform: scale(1.3) rotate(360deg); filter: drop-shadow(0 0 15px rgba(255, 234, 0, 1)); }
-    }
-
-    @keyframes star-levitate {
-      0% { transform: scale(1.3) translateY(0px) rotate(360deg); filter: drop-shadow(0 0 10px rgba(255, 234, 0, 0.7)); }
-      100% { transform: scale(1.4) translateY(-10px) rotate(370deg); filter: drop-shadow(0 0 25px rgba(255, 234, 0, 1)); }
-    }
-
-    @keyframes pulse-glow {
-      0% { transform: scale(1); text-shadow: 0 0 10px rgba(255,234,0,0.8); }
-      100% { transform: scale(1.1) rotate(2deg); text-shadow: 0 0 25px rgba(255,234,0,1); }
-    }
-
-    @keyframes text-float {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-6px); }
-    }
-
-    @keyframes crt-flicker { 0% { opacity: 0.985; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
-    @keyframes tracking-roll { 0% { top: -5%; } 6% { top: 105%; } 100% { top: 105%; } }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aztro</title>
     
-    @keyframes vhs-float {
-      0% { transform: rotateX(10deg) rotateY(-10deg) translateY(0px); }
-      100% { transform: rotateX(20deg) rotateY(10deg) translateY(-8px); }
-    }
-  </style>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFB300'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <style>
+        @font-face {
+            font-family: 'Aztro';
+            src: url('aztro.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --menu-bar-h: 78px;
+        }
+
+        body, html {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-user-drag: none;
+        }
+
+
+        #intro-view {
+            position: fixed; inset: 0; z-index: 99998;
+            background-color: #000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .crt-monitor {
+            position: relative; width: 100%; height: 100%;
+            background: #050505;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+            animation: crt-flicker 0.2s infinite;
+        }
+
+        .crt-monitor::before {
+            content: " "; display: block; position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), 
+                        linear-gradient(90deg, rgba(255, 234, 0, 0.02), rgba(255, 255, 255, 0.02), rgba(255, 234, 0, 0.02));
+            background-size: 100% 3px, 6px 100%;
+            z-index: 10; pointer-events: none;
+        }
+
+        .crt-monitor::after {
+            content: " "; display: block; position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 100%);
+            z-index: 11; pointer-events: none;
+        }
+
+        #vhs-grain {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.08; z-index: 2; pointer-events: none;
+        }
+
+        .tracking-distortion {
+            position: absolute; left: 0; width: 100%; height: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(1px) contrast(150%);
+            z-index: 3; animation: tracking-roll 8s infinite linear;
+            pointer-events: none;
+        }
+
+        .scene {
+            position: relative; z-index: 5;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            width: 100%; height: 100%; transform: scale(0.95);
+        }
+
+        .logo-perspective {
+            perspective: 2000px; 
+            margin-bottom: 70px; 
+            position: relative;
+        }
+
+        .logo-3d-master {
+            position: relative; width: 480px; height: 480px;
+            transform-style: preserve-3d; transition: transform 0.1s ease-out;
+        }
+
+        .logo-idle-float {
+            position: relative; width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            animation: vhs-float 4s ease-in-out infinite alternate;
+        }
+
+        .logo-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('az.svg') no-repeat center/contain;
+            transform-style: preserve-3d; pointer-events: none;
+        }
+
+        .logo-front {
+            filter: brightness(0) invert(1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
+        }
+
+        .logo-liquid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('az.svg') no-repeat center/contain;
+            clip-path: inset(100% 0 0 0);
+            transform: translateZ(2px);
+            transition: clip-path 0.1s linear;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(87%) saturate(1512%) hue-rotate(352deg) brightness(105%) contrast(105%) drop-shadow(0 0 20px rgba(255, 234, 0, 0.6));
+        }
+
+        #burst-container {
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0; z-index: 20; pointer-events: none;
+        }
+
+        .burst-star {
+            position: absolute; width: 25px; height: 25px;
+            top: -12.5px; left: -12.5px; fill: #FFEA00;
+            opacity: 0; transform-origin: center;
+        }
+
+        .burst-star.animate {
+            animation: burst-anim 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .loading-interface {
+            display: flex; flex-direction: column; align-items: center; gap: 25px;
+        }
+
+        .stars-track { display: flex; gap: 18px; position: relative; }
+        .star-icon { width: 30px; height: 30px; fill: #151515; transition: fill 0.2s, filter 0.2s; }
+
+        .star-icon.active {
+            fill: #FFEA00;
+            animation: star-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                       star-levitate 1.5s ease-in-out 0.8s infinite alternate;
+        }
+
+        .status-text-container {
+            height: 35px; display: flex; justify-content: center; align-items: center;
+            animation: text-float 3s ease-in-out infinite alternate;
+        }
+
+        .status-text {
+            color: #ffffff; font-size: 13pt; letter-spacing: 18px;
+            text-transform: uppercase; text-align: center; font-weight: bold;
+            opacity: 0; transform: translateY(30px) scale(0.8); filter: blur(8px);
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .status-text.visible {
+            opacity: 0.95; transform: translateY(0) scale(1);
+            letter-spacing: 5px; filter: blur(0);
+        }
+
+        .star-glow {
+            color: #FFEA00; font-weight: bold;
+            text-shadow: 0 0 15px rgba(255, 234, 0, 1), 0 0 30px rgba(255, 234, 0, 0.6);
+            display: inline-block;
+            animation: pulse-glow 1s infinite alternate;
+        }
+
+        #anti-ss {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000; z-index: 999999; opacity: 0; pointer-events: none;
+        }
+
+        #aztro-view {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1000; transition: opacity 1s ease;
+        }
+
+        #about-view {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 500; opacity: 0; pointer-events: none;
+            transition: opacity 1s ease;
+            background: url('fo.gif') no-repeat center center fixed; 
+            background-size: cover;
+        }
+
+        #fade-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 99999; pointer-events: none;
+            opacity: 1; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .picos-blancos-top {
+            position: absolute; top: 0; left: 0; width: 100%; height: 35px; background-color: white;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 95% 20%, 90% 100%, 85% 20%, 80% 100%, 75% 20%, 70% 100%, 65% 20%, 60% 100%, 55% 20%, 50% 100%, 45% 20%, 40% 100%, 35% 20%, 30% 100%, 25% 20%, 20% 100%, 15% 20%, 10% 100%, 5% 20%, 0% 100%);
+            z-index: 9000; pointer-events: none;
+        }
+
+        .linea-blanca { position: absolute; background-color: white; z-index: 8000; pointer-events: none; }
+        .linea-blanca.horizontal { height: 2px; }
+        .linea-blanca.vertical { width: 2px; }
+
+        .estrella-negra { position: absolute; z-index: 8000; pointer-events: none; }
+
+        #circus-lights {
+            position: absolute; top: 50%; left: 50%;
+            width: 65vmin; height: 65vmin;
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 0;
+        }
+        
+        .circus-bulb-container {
+            position: absolute; top: 0; left: 50%; width: 12px; height: 100%; transform-origin: center center;
+        }
+
+        .circus-bulb {
+            width: 12px; height: 12px; border-radius: 50%; background: #FFB300;
+            box-shadow: 0 0 10px #FFB300, 0 0 20px #FFB300;
+            animation: bulb-blink 0.7s infinite alternate;
+            position: absolute; top: -6px;
+        }
+        .circus-bulb.even { background: #fff; box-shadow: 0 0 10px #fff, 0 0 20px #fff; animation-delay: 0.35s; }
+
+        #aztro-canvas-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            filter: contrast(1.2) saturate(1.3) sepia(0.15); transition: filter 0.1s;
+        }
+
+        #yellow-panel-left {
+            position: absolute; top: 0; left: 0; width: 420px; height: 100%;
+            background-color: #FFB300; z-index: 8010; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 150px calc(var(--menu-bar-h) + 30px) 30px;
+            -webkit-mask: radial-gradient(circle 150px at 100% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(circle 150px at 100% 50%, transparent 97%, black 97.5%);
+            filter: drop-shadow(10px 0 20px rgba(0,0,0,0.6));
+        }
+        #yellow-panel-left::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(circle 150px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+        }
+
+        .panel-left-img { width: 320px; height: 320px; position: absolute; top: 20px; left: 20px; filter: brightness(0); object-fit: contain; z-index: 8020; }
+        .desc-container { width: 230px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 380px; margin-bottom: 50px; position: relative; z-index: 8010; }
+        
+        .desc-text { font-size: 14px; text-align: justify; line-height: 1.6; font-family: 'Aztro', sans-serif; text-transform: uppercase; }
+        .desc-p1 { color: #111; margin-bottom: 15px; }
+        .desc-p2 { color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+
+        #yellow-panel {
+            position: absolute; top: 0; right: 0; width: 420px; height: 100%;
+            background-color: #FFB300; z-index: 8010; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px 30px calc(var(--menu-bar-h) + 30px) 150px;
+            -webkit-mask: radial-gradient(circle 150px at 0% 50%, transparent 97%, black 97.5%);
+            mask: radial-gradient(circle 150px at 0% 50%, transparent 97%, black 97.5%);
+            filter: drop-shadow(-10px 0 20px rgba(0,0,0,0.6));
+        }
+        #yellow-panel::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(circle 150px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%);
+        }
+
+        .panel-svg { width: 70px; height: 70px; fill: #111; margin-bottom: 40px; }
+        .media-container {
+            width: 230px; height: 310px; border-radius: 130px 130px 20px 20px;
+            overflow: hidden; position: relative; margin-bottom: 30px;
+        }
+        .media-gif { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+        .media-png { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; pointer-events: none; }
+
+        .collab-text {
+            width: 230px; font-size: 14px; color: #111; text-align: justify;
+            font-family: 'Aztro', sans-serif; text-transform: uppercase; font-weight: normal;
+            line-height: 1.4; margin-bottom: 50px;
+        }
+
+        #bottom-nav {
+            position: fixed; bottom: calc(var(--menu-bar-h) + 14px); left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; justify-content: center; z-index: 8005; width: 100%; max-width: 800px;
+        }
+        #bottom-nav svg { width: 100%; height: 150px; overflow: visible; pointer-events: none; }
+
+        #nav-title {
+            color: #ffffff; font-size: 14pt; font-family: 'Aztro', sans-serif; font-weight: normal; 
+            text-transform: uppercase; letter-spacing: 8px; 
+            transition: all 0.3s ease; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: smoothFade 3s ease-in-out infinite; pointer-events: auto; cursor: pointer;
+        }
+
+        #bottom-menu-bar {
+            position: fixed; left: 0; bottom: 0; width: 100%; height: var(--menu-bar-h);
+            z-index: 8600; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 35%, #000 100%);
+            border-top: 2px solid #FFB300;
+            box-shadow: 0 -12px 30px rgba(0,0,0,0.55), 0 -1px 18px rgba(255,179,0,0.25);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            padding: 6px 20px calc(env(safe-area-inset-bottom, 0px)) 20px;
+            box-sizing: border-box;
+        }
+
+        #mute-btn {
+            position: absolute; left: 30px;
+            background: none; border: none; color: #fff; font-size: 24px; cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        #mute-btn:hover { color: #FFB300; transform: scale(1.15); }
+
+        .menu-center-items {
+            display: flex; gap: clamp(16px, 4vw, 58px); align-items: center; justify-content: center;
+        }
+
+        .menu-bar-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; background: none; border: none; cursor: pointer; text-decoration: none;
+            color: #ffffff; font-family: 'Aztro', sans-serif; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 11px; white-space: nowrap;
+            transition: color 0.25s ease, transform 0.25s ease; padding: 8px 4px;
+        }
+        .menu-bar-item i { font-size: 19px; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease, text-shadow 0.25s ease; }
+        .menu-bar-item:hover, .menu-bar-item:focus-visible { color: #FFB300; transform: translateY(-4px); }
+        .menu-bar-item:hover i, .menu-bar-item:focus-visible i { transform: scale(1.18); text-shadow: 0 0 14px rgba(255,179,0,0.9); }
+
+        #copyright-text {
+            position: absolute; right: 30px;
+            color: #ffffff; font-size: 12px; font-family: 'Aztro', sans-serif;
+            text-align: right; line-height: 1.4; font-weight: normal;
+        }
+
+        #contact-area {
+            position: fixed; top: 35px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: row; gap: 50px; z-index: 8005; justify-content: center; align-items: flex-start;
+        }
+        .contact-arc-wrapper { transform: translateY(var(--ty)) rotate(var(--rot)); }
+        .contact-item {
+            position: relative; display: flex; flex-direction: column; align-items: center;
+            text-decoration: none; color: #fff; font-size: 2.2rem; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Aztro', sans-serif; text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        }
+        .contact-item:hover { color: #FFB300; transform: scale(1.25) skew(-5deg); text-shadow: 0 0 15px #FFB300; }
+
+        #about-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 10;
+            background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0.1) 2px, rgba(0, 0, 0, 0.1) 4px);
+        }
+        #about-canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2; }
+        #about-webgl-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 3; pointer-events: none; }
+        
+        .book-cover, .paper-stack, .book-page, .tab, .grid-item img, .ref-item img, .about-contact-btn { pointer-events: auto; }
+
+        .book-cover { width: 900px; height: 1060px; background: #FFB300; border: 4px solid #cc9900; box-sizing: border-box; box-shadow: 0 25px 70px rgba(0,0,0,.3); }
+        .cover-left { border-radius: 30px 0 0 30px; }
+        .cover-right { border-radius: 0 30px 30px 0; }
+
+        .paper-stack { width: 860px; height: 1020px; background: #fdfbf7; box-sizing: border-box; }
+        .stack-left { border-radius: 20px 0 0 20px; box-shadow: -2px 2px 0 #f0e6d2, -4px 4px 0 #e8dcbf, -6px 6px 0 #f0e6d2, -8px 8px 0 #e8dcbf, -10px 10px 0 #f0e6d2, -12px 12px 0 #e8dcbf, -14px 14px 0 #f0e6d2, -16px 16px 0 #e8dcbf; }
+        .stack-right { border-radius: 0 20px 20px 0; box-shadow: 2px 2px 0 #f0e6d2, 4px 4px 0 #e8dcbf, 6px 6px 0 #f0e6d2, 8px 8px 0 #e8dcbf, 10px 10px 0 #f0e6d2, 12px 12px 0 #e8dcbf, 14px 14px 0 #f0e6d2, 16px 16px 0 #e8dcbf; }
+
+        .book-page { width: 860px; height: 1020px; background: #ffffff; box-sizing: border-box; padding: 60px; position: relative; transform-style: preserve-3d; }
+        .left-page { border-radius: 20px 0 0 20px; border-right: none; }
+        .right-page { border-radius: 0 20px 20px 0; border-left: none; }
+
+        h1 { color: #111; text-align: center; text-align-last: center; font-size: 56px; font-weight: bold; margin-top: 0; text-transform: uppercase; letter-spacing: 6px; padding-bottom: 20px; font-family: 'Aztro', sans-serif; -webkit-text-stroke: 2px #111; }
+
+        .main-character-box { width: 100%; height: 900px; background: transparent; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; border-radius: 15px; overflow: hidden; }
+        .bg-fon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .fg-avatar { position: relative; z-index: 2; max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
+
+        .sticker { position: absolute; z-index: 100; pointer-events: none; filter: drop-shadow(4px 6px 6px rgba(0,0,0,0.3)); }
+        .sticker-1 { top: -40px; left: -40px; width: 180px; transform: rotate(-15deg); }
+        .sticker-2 { bottom: -30px; right: -30px; width: 160px; transform: rotate(20deg); }
+
+        .tabs-container { position: absolute; top: 120px; right: -140px; display: flex; flex-direction: column; gap: 20px; transform: translateZ(-8px); }
+        .tab { width: 170px; height: 75px; background: #000; border: 3px solid #FFB300; border-radius: 0 20px 20px 0; border-left: none; display: flex; align-items: center; justify-content: flex-end; padding-right: 20px; font-size: 20px; font-weight: normal; letter-spacing: 2px; color: #FFB300; cursor: pointer; box-shadow: 8px 8px 15px rgba(0,0,0,0.4); transform: translateX(-40px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s, color 0.2s, box-shadow 0.2s; font-family: 'Aztro', sans-serif; text-transform: uppercase; }
+        .tab:hover { transform: translateX(0px); background: #FFB300; color: #000; box-shadow: 0 0 20px rgba(255, 179, 0, 0.6); }
+
+        .content-area { height: 750px; animation: fadeIn 0.4s ease-in-out; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; justify-content: flex-start; padding-right: 15px; }
+        .content-area::-webkit-scrollbar { width: 8px; }
+        .content-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.03); border-radius: 4px; }
+        .content-area::-webkit-scrollbar-thumb { background: rgba(255, 179, 0, 0.4); border-radius: 4px; }
+
+        .bio-text { font-size: 28px; line-height: 1.8; color: #111; text-align: justify; text-align-last: center; margin-bottom: 40px; }
+        .skills-container { display: flex; flex-direction: column; gap: 35px; }
+        .skill-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .skill-header { display: flex; justify-content: space-between; align-items: center; width: 75%; }
+        .skill-title { font-size: 26px; font-weight: bold; color: #111; letter-spacing: 1px; font-family: 'Aztro', sans-serif; text-transform: uppercase; }
+        .skill-stars { color: #FFB300; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); letter-spacing: 4px; }
+        
+        .skill-bar-bg { width: 75%; height: 35px; background-color: #111; border: 3px solid #000; border-radius: 12px; overflow: hidden; box-shadow: inset 0 3px 6px rgba(0,0,0,0.5); }
+        .skill-bar-fill { height: 100%; background: repeating-linear-gradient(-45deg, #000 0px, #000 15px, #FFB300 15px, #FFB300 30px); background-size: 60px 100%; border-radius: 8px; width: 0; animation: fillBar 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards, stripeMove 1s linear infinite; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: auto; padding-bottom: 20px; }
+        .grid-item-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+        .grid-item { width: 100%; aspect-ratio: 1; border-radius: 15px; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; border: 2px solid #000; }
+        .grid-item:hover { transform: scale(1.03); border-color: #FFB300; box-shadow: 0 10px 25px rgba(255, 179, 0, 0.3); }
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .like-text { color: #111; font-family: 'Aztro', sans-serif; font-size: 15px; text-transform: uppercase; text-align: center; font-weight: bold; }
+
+        .ref-container { display: flex; flex-direction: column; gap: 25px; padding-bottom: 20px; }
+        .ref-item { display: flex; flex-direction: column; background: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.08); transition: transform 0.3s ease; border: 3px solid #000; }
+        .ref-item:hover { transform: scale(1.02); border-color: #FFB300; box-shadow: 0 15px 30px rgba(255, 179, 0, 0.2); }
+        .ref-img-wrapper { width: 100%; height: 170px; overflow: hidden; background: #f8f9fa; border-bottom: 3px solid #000;}
+        .ref-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .ref-text { padding: 22px 30px; font-size: 22px; color: #111; text-align: left; line-height: 1.6; font-weight: 500; }
+        .ref-text strong { display: block; font-size: 26px; margin-bottom: 10px; color: #000; font-weight: bold; -webkit-text-stroke: 1.5px #000; border-bottom: 2px solid #FFB300; padding-bottom: 8px; font-family: 'Aztro', sans-serif; text-transform: uppercase;}
+
+        .contact-list { display: flex; flex-direction: column; gap: 20px; padding: 10px 30px; }
+        .about-contact-btn { display: flex; align-items: center; justify-content: center; gap: 20px; background: #000; color: #FFB300; text-decoration: none; font-size: 32px; font-family: 'Aztro', sans-serif; padding: 20px; border-radius: 15px; border: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: uppercase; letter-spacing: 2px; }
+        .about-contact-btn i { font-size: 40px; }
+        .about-contact-btn:hover { background: #FFB300; color: #000; transform: scale(1.05) translateY(-5px); box-shadow: 0 15px 25px rgba(255,179,0,0.4); }
+
+        #btn-close-about {
+            position: fixed; top: 40px; right: 40px; font-family: 'Aztro', sans-serif; font-size: 35px;
+            color: #FFB300; background: #000; border: 3px solid #FFB300; border-radius: 50%;
+            width: 70px; height: 70px; cursor: pointer; z-index: 9999; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(255,179,0,0.5); pointer-events: auto; transition: all 0.3s;
+        }
+        #btn-close-about:hover { background: #FFB300; color: #000; transform: scale(1.15) rotate(90deg); box-shadow: 0 0 30px rgba(255,179,0,0.8); }
+
+        @keyframes burst-anim { 0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 5px #FFEA00); } 50% { opacity: 1; filter: drop-shadow(0 0 15px #FFEA00); } 100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg); opacity: 0; filter: drop-shadow(0 0 5px #FFEA00); } }
+        @keyframes star-pop { 0% { transform: scale(0.5) rotate(-90deg); fill: #1a1a1a; } 40% { transform: scale(2.2) rotate(180deg); fill: #fff; filter: drop-shadow(0 0 25px #fff); } 70% { transform: scale(0.9) rotate(380deg); fill: #FFEA00; } 100% { transform: scale(1.3) rotate(360deg); filter: drop-shadow(0 0 15px rgba(255, 234, 0, 1)); } }
+        @keyframes star-levitate { 0% { transform: scale(1.3) translateY(0px) rotate(360deg); filter: drop-shadow(0 0 10px rgba(255, 234, 0, 0.7)); } 100% { transform: scale(1.4) translateY(-10px) rotate(370deg); filter: drop-shadow(0 0 25px rgba(255, 234, 0, 1)); } }
+        @keyframes pulse-glow { 0% { transform: scale(1); text-shadow: 0 0 10px rgba(255,234,0,0.8); } 100% { transform: scale(1.1) rotate(2deg); text-shadow: 0 0 25px rgba(255,234,0,1); } }
+        @keyframes text-float { 0% { transform: translateY(0px); } 100% { transform: translateY(-6px); } }
+        @keyframes crt-flicker { 0% { opacity: 0.985; } 50% { opacity: 1; } 100% { opacity: 0.99; } }
+        @keyframes tracking-roll { 0% { top: -5%; } 6% { top: 105%; } 100% { top: 105%; } }
+        @keyframes vhs-float { 0% { transform: rotateX(10deg) rotateY(-10deg) translateY(0px); } 100% { transform: rotateX(20deg) rotateY(10deg) translateY(-8px); } }
+        @keyframes smoothFade { 0%, 100% { opacity: 0.1; } 50% { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fillBar { from { width: 0%; } to { width: var(--target-width); } }
+        @keyframes stripeMove { 0% { background-position: 0 0; } 100% { background-position: 60px 0; } }
+        @keyframes bulb-blink { 0% { opacity: 0.2; transform: scale(0.75); } 100% { opacity: 1; transform: scale(1.15); } }
+
+        @media (max-width: 768px) {
+            :root { --menu-bar-h: 62px; }
+            .logo-3d-master { width: 420px; height: 420px; }
+            .logo-perspective { margin-bottom: 60px; }
+            .loading-interface { gap: 20px; }
+            .stars-track { gap: 14px; }
+            .star-icon { width: 34px; height: 34px; }
+            .status-text { font-size: 14pt; letter-spacing: 6px; }
+            .status-text.visible { letter-spacing: 4px; }
+            
+            #yellow-panel { width: 220px; padding: 15px 15px calc(var(--menu-bar-h) + 20px) 80px; -webkit-mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%); mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%); }
+            #yellow-panel::after { background: radial-gradient(circle 80px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); }
+            #yellow-panel-left { width: 220px; padding: 15px 80px calc(var(--menu-bar-h) + 20px) 15px; -webkit-mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%); mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%); }
+            #yellow-panel-left::after { background: radial-gradient(circle 80px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); }
+            .panel-svg { width: 50px; height: 50px; }
+            .panel-left-img { width: 150px; height: 150px; position: absolute; top: 10px; left: 10px; margin-top: 0; margin-bottom: 0; }
+            .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
+            .collab-text { width: 120px; font-size: 10px; margin-bottom: 20px; }
+            .desc-container { width: 120px; height: 160px; margin-top: 170px; margin-bottom: 20px; }
+            .desc-text { font-size: 11px; line-height: 1.4; }
+            
+            #bottom-nav { bottom: calc(var(--menu-bar-h) + 10px); gap: 15px; width: 100%; pointer-events: none; }
+            #nav-title { font-size: 10pt; letter-spacing: 5px; pointer-events: auto; cursor: pointer; }
+            #contact-area { top: 35px; gap: 0; width: 90%; padding: 0; justify-content: space-around; right: 80px; left: auto; transform: none; }
+            .contact-item { font-size: 2.4rem; }
+            .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6)); }
+            .menu-center-items { gap: clamp(8px, 4.5vw, 22px); }
+            .menu-bar-item { font-size: 8px; gap: 3px; padding: 6px 3px; }
+            .menu-bar-item i { font-size: 16px; }
+            #mute-btn { left: 15px; font-size: 20px; }
+            #copyright-text { right: 15px; font-size: 9px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo-3d-master { width: 320px; height: 320px; }
+            .logo-perspective { margin-bottom: 40px; }
+            .status-text { font-size: 12pt; letter-spacing: 4px; }
+            .status-text.visible { letter-spacing: 2px; }
+            .star-icon { width: 26px; height: 26px; }
+            .stars-track { gap: 6px; }
+            .menu-bar-item span { display: none; }
+            .menu-bar-item i { font-size: 20px; }
+            .menu-center-items { gap: clamp(10px, 7vw, 26px); }
+        }
+    </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
 
-  <div class="crt-monitor">
-    <canvas id="vhs-grain"></canvas>
-    <div class="tracking-distortion"></div>
+    <div id="intro-view">
+        <div class="crt-monitor">
+            <canvas id="vhs-grain"></canvas>
+            <div class="tracking-distortion"></div>
 
-    <div class="scene">
-      <div class="logo-perspective">
-        <div class="logo-3d-master" id="interactive-anchor">
-          <div class="logo-idle-float" id="extrusion-target"></div>
-          <div id="burst-container"></div>
-        </div>
-      </div>
+            <div class="scene">
+                <div class="logo-perspective">
+                    <div class="logo-3d-master" id="interactive-anchor">
+                        <div class="logo-idle-float" id="extrusion-target"></div>
+                        <div id="burst-container"></div>
+                    </div>
+                </div>
 
-      <div class="loading-interface">
-        <div class="stars-track" id="stars-container"></div>
-        <div class="status-text-container">
-          <div class="status-text" id="loading-msg"></div>
+                <div class="loading-interface">
+                    <div class="stars-track" id="stars-container"></div>
+                    <div class="status-text-container">
+                        <div class="status-text" id="loading-msg"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div id="master-fade"></div>
+   
+    <audio id="bg-music" loop>
+        <source src="celestial.mp3" type="audio/mpeg">
+    </audio>
 
-  <script>
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 's' || e.key === 'p')) { e.preventDefault(); }
-      if (e.key === 'F12') { e.preventDefault(); }
-      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); }
-    });
+    <div id="anti-ss"></div>
+    <div id="fade-overlay"></div>
 
-    const container = document.getElementById('extrusion-target');
-    const burstContainer = document.getElementById('burst-container');
-    const layersCount = 20; 
-    const separation = 1.8; 
-
-    for (let i = 1; i <= layersCount; i++) {
-      const layer = document.createElement('div');
-      layer.className = 'logo-layer';
-      layer.style.transform = `translateZ(${-i * separation}px)`;
-      const darkness = 1 - (i / layersCount) * 0.75;
-      layer.style.filter = `brightness(0) invert(1) brightness(${darkness})`;
-      container.appendChild(layer);
-    }
-
-    const frontLayer = document.createElement('div');
-    frontLayer.className = 'logo-layer logo-front';
-    frontLayer.style.transform = `translateZ(0px)`;
-    container.appendChild(frontLayer);
-
-    const liquidLayer = document.createElement('div');
-    liquidLayer.className = 'logo-liquid';
-    container.appendChild(liquidLayer);
-
-    const anchor = document.getElementById('interactive-anchor');
-    document.addEventListener('mousemove', (event) => {
-      const cx = (event.clientX / window.innerWidth) - 0.5;
-      const cy = (event.clientY / window.innerHeight) - 0.5;
-      anchor.style.transform = `rotateX(${-cy * 45}deg) rotateY(${cx * 45}deg)`;
-    });
-
-    const canvas = document.getElementById('vhs-grain');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 320; canvas.height = 320;
-    function renderNoise() {
-      const imgData = ctx.createImageData(canvas.width, canvas.height);
-      const buffer = new Uint32Array(imgData.data.buffer);
-      for (let i = 0; i < buffer.length; i++) {
-        const noise = (Math.random() * 255) | 0;
-        buffer[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
-      }
-      ctx.putImageData(imgData, 0, 0);
-      requestAnimationFrame(renderNoise);
-    }
-    renderNoise();
-
-    const fadeOverlay = document.getElementById('master-fade');
-    const starsContainer = document.getElementById('stars-container');
-    const msgContainer = document.getElementById('loading-msg');
-
-    const starSVGPath = `<path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z"/>`;
-    const starSVG = `<svg class="star-icon" viewBox="0 0 24 24">${starSVGPath}</svg>`;
-    starsContainer.innerHTML = starSVG.repeat(10);
-    const starNodes = document.querySelectorAll('.star-icon');
-
-    const messages = [
-      "Welcome starlight, ready to shine?",
-      "Make them <span class='star-glow'>star</span>e",
-      "Let's glow up your creations"
-    ];
-
-    let currentMsgIndex = -1;
-
-    function updateMessage(index) {
-      if (currentMsgIndex === index) return;
-      currentMsgIndex = index;
-      
-      msgContainer.classList.remove('visible');
-      
-      setTimeout(() => {
-        msgContainer.innerHTML = messages[index];
-        msgContainer.classList.add('visible');
-      }, 500); 
-    }
-
-    function triggerLogoBurst() {
-      const isMobile = window.innerWidth <= 768;
-      const burstCount = isMobile ? 8 : 12;
-      const radius = isMobile ? 160 : 200;
-
-      for (let i = 0; i < burstCount; i++) {
-        const burstStar = document.createElement('div');
-        burstStar.className = 'burst-star';
-        burstStar.innerHTML = `<svg viewBox="0 0 24 24" style="width:100%;height:100%;">${starSVGPath}</svg>`;
+ 
+    <div id="aztro-view">
+        <div class="picos-blancos-top"></div>
         
-        const angle = (i / burstCount) * (Math.PI * 2);
-        const tx = Math.cos(angle) * (radius + Math.random() * 50);
-        const ty = Math.sin(angle) * (radius + Math.random() * 50);
+        <div class="linea-blanca horizontal" style="top: 25%; left: 5%; width: 200px;"></div>
+        <div class="linea-blanca vertical" style="top: 40%; right: 10%; height: 150px;"></div>
+        <div class="linea-blanca horizontal" style="bottom: 15%; right: 25%; width: 120px;"></div>
         
-        burstStar.style.setProperty('--tx', `${tx}px`);
-        burstStar.style.setProperty('--ty', `${ty}px`);
-        
-        burstContainer.appendChild(burstStar);
-        
-        setTimeout(() => {
-          burstStar.classList.add('animate');
-        }, Math.random() * 200);
-      }
-    }
+        <img src="st.svg" class="estrella-negra" style="top: 20%; left: 75%; width: 25px;" alt="Star">
+        <img src="st.svg" class="estrella-negra" style="top: 60%; left: 15%; width: 20px;" alt="Star">
+        <img src="st.svg" class="estrella-negra" style="top: 80%; left: 85%; width: 30px;" alt="Star">
 
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => fadeOverlay.style.opacity = '0', 300);
-      executeDynamicLoading();
-    });
+        <div id="circus-lights"></div>
+        <div id="aztro-canvas-container"></div>
 
-    function executeDynamicLoading() {
-      let percentage = 0;
-      let activeStars = 0;
-      let burstTriggered = false;
-      
-      const timer = setInterval(() => {
-        percentage += Math.random() * 0.9 + 0.3; 
-        
-        if (percentage >= 100) {
-          percentage = 100;
-          clearInterval(timer);
-          liquidLayer.style.clipPath = `inset(0% 0 0 0)`;
-          
-          if (!burstTriggered) {
-            triggerLogoBurst();
-            burstTriggered = true;
-          }
+        <div id="yellow-panel-left">
+            <img src="az.svg" class="panel-left-img" alt="AZ">
+            <div class="desc-container">
+                <div class="desc-text desc-p1">
+                    Animator and illustrator with a degree in Graphic Design and Visual Communication.
+                </div>
+                <div class="desc-text desc-p2">
+                    Passionate about space themes and creating creepy monsters, adapting to various topics while always giving them a unique essence.
+                </div>
+            </div>
+        </div>
 
-          setTimeout(executeExitTransition, 2000); 
-        } else {
-          const emptySpace = 100 - percentage;
-          liquidLayer.style.clipPath = `inset(${emptySpace}% 0 0 0)`;
+        <div id="yellow-panel">
+            <svg class="panel-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <div class="media-container">
+                <img src="cua.gif" class="media-gif" alt="GIF">
+                <img src="ic1.png" class="media-png" id="hover-png" alt="PNG">
+            </div>
+            
+            <div class="collab-text">
+                I'm excited to work with you and create amazing new things together! So, let's meet the stars together
+            </div>
+        </div>
+
+        <div id="bottom-nav">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 150">
+                <path id="nav-curve" d="M 100,30 Q 400,140 700,30" fill="transparent" />
+                <text fill="currentColor" text-anchor="middle">
+                    <textPath href="#nav-curve" startOffset="50%" id="nav-title">SCROLL OR CLICK THE 3D OBJECT</textPath>
+                </text>
+            </svg>
+        </div>
+
+        <div id="contact-area">
+            <div class="contact-arc-wrapper" style="--rot: -35deg; --ty: 70px;"><a href="https://instagram.com/aztroshaper" target="_blank" class="contact-item"><i class="fab fa-instagram"></i></a></div>
+            <div class="contact-arc-wrapper" style="--rot: -21deg; --ty: 35px;"><a href="https://instagram.com/direct/t/aztroshaper" target="_blank" class="contact-item"><i class="far fa-paper-plane"></i></a></div>
+            <div class="contact-arc-wrapper" style="--rot: -7deg; --ty: 10px;"><a href="https://tiktok.com/@aztroshaper" target="_blank" class="contact-item"><i class="fab fa-tiktok"></i></a></div>
+            <div class="contact-arc-wrapper" style="--rot: 7deg; --ty: 10px;"><a href="https://www.pi.fyi/u/aztroshaper" target="_blank" class="contact-item"><i class="fas fa-star"></i></a></div>
+            <div class="contact-arc-wrapper" style="--rot: 21deg; --ty: 35px;"><a href="https://www.youtube.com/@Aztroshaper" target="_blank" class="contact-item"><i class="fab fa-youtube"></i></a></div>
+            <div class="contact-arc-wrapper" style="--rot: 35deg; --ty: 70px;"><a href="https://www.artstation.com/aztroshaper" target="_blank" class="contact-item"><i class="fab fa-artstation"></i></a></div>
+        </div>
+
+        <nav id="bottom-menu-bar" aria-label="Main menu">
+            <button id="mute-btn" title="Toggle Sound"><i class="fas fa-volume-up"></i></button>
+            
+            <div class="menu-center-items">
+                <a href="ani.html" id="menu-animation" class="menu-bar-item"><i class="fas fa-film"></i><span>Animation</span></a>
+                <a href="gd.html" id="menu-graphic-design" class="menu-bar-item"><i class="fas fa-palette"></i><span>Graphic Design</span></a>
+                <a href="illust.html" id="menu-illustration" class="menu-bar-item"><i class="fas fa-paintbrush"></i><span>Illustration</span></a>
+                <a href="3d.html" id="menu-3d-models" class="menu-bar-item"><i class="fas fa-cube"></i><span>3D Models</span></a>
+                <button type="button" id="menu-about" class="menu-bar-item"><i class="fas fa-star"></i><span>About Me</span></button>
+            </div>
+            
+            <div id="copyright-text">
+                &copy; 2026 AZTROSHAPER.<br>ALL RIGHTS RESERVED.
+            </div>
+        </nav>
+    </div>
+
+    <div id="about-view">
+        <button id="btn-close-about"><i class="fas fa-times"></i></button>
+        <div id="about-overlay"></div>
+        <div id="about-canvas-container"></div>
+        <div id="about-webgl-container"></div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+
+        const muteBtn = document.getElementById('mute-btn');
+        const bgMusic = document.getElementById('bg-music');
+        const muteIcon = muteBtn.querySelector('i');
+
+        muteBtn.addEventListener('click', () => {
+            if (bgMusic.muted) {
+                bgMusic.muted = false;
+                muteIcon.className = 'fas fa-volume-up';
+            } else {
+                bgMusic.muted = true;
+                muteIcon.className = 'fas fa-volume-mute';
+            }
+        });
+
+        const introContainer = document.getElementById('extrusion-target');
+        const burstContainer = document.getElementById('burst-container');
+        const layersCount = 20; const separation = 1.8; 
+
+        for (let i = 1; i <= layersCount; i++) {
+            const layer = document.createElement('div');
+            layer.className = 'logo-layer';
+            layer.style.transform = `translateZ(${-i * separation}px)`;
+            const darkness = 1 - (i / layersCount) * 0.75;
+            layer.style.filter = `brightness(0) invert(1) brightness(${darkness})`;
+            introContainer.appendChild(layer);
+        }
+        const frontLayer = document.createElement('div');
+        frontLayer.className = 'logo-layer logo-front';
+        frontLayer.style.transform = `translateZ(0px)`;
+        introContainer.appendChild(frontLayer);
+
+        const liquidLayer = document.createElement('div');
+        liquidLayer.className = 'logo-liquid';
+        introContainer.appendChild(liquidLayer);
+
+        const anchor = document.getElementById('interactive-anchor');
+        document.addEventListener('mousemove', (event) => {
+            const cx = (event.clientX / window.innerWidth) - 0.5;
+            const cy = (event.clientY / window.innerHeight) - 0.5;
+            anchor.style.transform = `rotateX(${-cy * 45}deg) rotateY(${cx * 45}deg)`;
+        });
+
+        const canvas = document.getElementById('vhs-grain');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 320; canvas.height = 320;
+        function renderNoise() {
+            const imgData = ctx.createImageData(canvas.width, canvas.height);
+            const buffer = new Uint32Array(imgData.data.buffer);
+            for (let i = 0; i < buffer.length; i++) {
+                const noise = (Math.random() * 255) | 0;
+                buffer[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
+            }
+            ctx.putImageData(imgData, 0, 0);
+            requestAnimationFrame(renderNoise);
+        }
+        renderNoise();
+
+        const fadeOverlay = document.getElementById('fade-overlay');
+        const starsContainer = document.getElementById('stars-container');
+        const msgContainer = document.getElementById('loading-msg');
+
+        const starSVGPath = `<path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z"/>`;
+        const starSVG = `<svg class="star-icon" viewBox="0 0 24 24">${starSVGPath}</svg>`;
+        starsContainer.innerHTML = starSVG.repeat(10);
+        const starNodes = document.querySelectorAll('.star-icon');
+
+        const messages = [
+            "Welcome starlight, ready to shine?",
+            "Make them <span class='star-glow'>star</span>e",
+            "Let's glow up your creations"
+        ];
+        let currentMsgIndex = -1;
+        function updateMessage(index) {
+            if (currentMsgIndex === index) return;
+            currentMsgIndex = index;
+            msgContainer.classList.remove('visible');
+            setTimeout(() => {
+                msgContainer.innerHTML = messages[index];
+                msgContainer.classList.add('visible');
+            }, 500); 
         }
 
-        if (percentage < 33) updateMessage(0);
-        else if (percentage < 66) updateMessage(1);
-        else updateMessage(2);
-
-        const expectedStars = Math.floor((percentage / 100) * 10);
-        if (expectedStars > activeStars && activeStars < 10) {
-          starNodes[activeStars].classList.add('active');
-          activeStars++;
+        function triggerLogoBurst() {
+            const isMobile = window.innerWidth <= 768;
+            const burstCount = isMobile ? 8 : 12;
+            const radius = isMobile ? 160 : 200;
+            for (let i = 0; i < burstCount; i++) {
+                const burstStar = document.createElement('div');
+                burstStar.className = 'burst-star';
+                burstStar.innerHTML = `<svg viewBox="0 0 24 24" style="width:100%;height:100%;">${starSVGPath}</svg>`;
+                const angle = (i / burstCount) * (Math.PI * 2);
+                const tx = Math.cos(angle) * (radius + Math.random() * 50);
+                const ty = Math.sin(angle) * (radius + Math.random() * 50);
+                burstStar.style.setProperty('--tx', `${tx}px`);
+                burstStar.style.setProperty('--ty', `${ty}px`);
+                burstContainer.appendChild(burstStar);
+                setTimeout(() => burstStar.classList.add('animate'), Math.random() * 200);
+            }
         }
-      }, 50);
-    }
 
-    function executeExitTransition() {
-      fadeOverlay.style.opacity = '1';
-      setTimeout(() => {
-        window.location.href = 'aztro.html';
-      }, 1500);
-    }
-  </script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => fadeOverlay.style.opacity = '0', 300);
+            executeDynamicLoading();
+        });
+
+        function executeDynamicLoading() {
+            let percentage = 0; let activeStars = 0; let burstTriggered = false;
+            const timer = setInterval(() => {
+                percentage += Math.random() * 0.9 + 0.3; 
+                
+                if (percentage >= 100) {
+                    percentage = 100;
+                    clearInterval(timer);
+                    liquidLayer.style.clipPath = `inset(0% 0 0 0)`;
+                    
+                    if (!burstTriggered) { triggerLogoBurst(); burstTriggered = true; }
+
+                    msgContainer.innerHTML = "<span class='star-glow'>PRESS THE STAR TO ENTER</span>";
+                    msgContainer.classList.add('visible');
+                    
+                    msgContainer.style.cursor = 'pointer';
+
+                    const enterSite = (e) => {
+                        if (e) e.stopPropagation();
+                        const introView = document.getElementById('intro-view');
+                        introView.style.opacity = '0';
+                        setTimeout(() => { introView.style.display = 'none'; }, 1500);
+                        
+                        bgMusic.volume = 0.5;
+                        bgMusic.play().catch(e => console.log('Autoplay restriction:', e));
+                        
+                        gsap.fromTo(".contact-item", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, stagger: 0.1, ease: "back.out(1.5)", delay: 0.5, clearProps: "transform,opacity" });
+
+                        msgContainer.removeEventListener('click', enterSite);
+                    };
+
+                    msgContainer.addEventListener('click', enterSite);
+                } else {
+                    const emptySpace = 100 - percentage;
+                    liquidLayer.style.clipPath = `inset(${emptySpace}% 0 0 0)`;
+                    
+                    if (percentage < 33) updateMessage(0);
+                    else if (percentage < 66) updateMessage(1);
+                    else updateMessage(2);
+
+                    const expectedStars = Math.floor((percentage / 100) * 10);
+                    if (expectedStars > activeStars && activeStars < 10) {
+                        starNodes[activeStars].classList.add('active');
+                        activeStars++;
+                    }
+                }
+            }, 50);
+        }
+
+        let currentView = 'aztro'; 
+        const clock = new THREE.Clock();
+
+        function applyMayaMode(obj) {
+            obj.traverse((child) => {
+                if (child.isMesh && child.geometry) {
+                    if(child.material) {
+                        child.material.flatShading = true; child.material.metalness = 0.1; child.material.roughness = 0.1; child.material.transparent = true; child.material.opacity = 0.8;
+                        if(child.material.isMeshPhysicalMaterial) { child.material.transmission = 0.8; child.material.thickness = 0.5; }
+                        if (!child.material.emissive) child.material.emissive = new THREE.Color(0x000000);
+                        if (child.material.emissive.getHex() === 0x000000) child.material.emissive.copy(child.material.color).multiplyScalar(0.6);
+                        else child.material.emissiveIntensity = 0.8;
+                        child.material.needsUpdate = true;
+                    }
+                    const edges = new THREE.EdgesGeometry(child.geometry);
+                    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xFFB300, transparent: true, opacity: 0.6 }));
+                    child.add(line);
+                }
+            });
+        }
+
+        const circusLights = document.getElementById('circus-lights');
+        for (let i = 0; i < 60; i++) {
+            let container = document.createElement('div');
+            container.className = 'circus-bulb-container';
+            container.style.transform = `translateX(-50%) rotate(${(i / 60) * 360}deg)`;
+            let bulb = document.createElement('div');
+            bulb.className = 'circus-bulb' + (i % 2 === 0 ? ' even' : '');
+            container.appendChild(bulb); circusLights.appendChild(container);
+        }
+
+        const aztroScene = new THREE.Scene();
+        aztroScene.fog = new THREE.FogExp2(0x000000, 0.035);
+
+        const aztroCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        function updateResponsiveCamera() { aztroCamera.position.z = window.innerWidth <= 768 ? 16 : 10; }
+        updateResponsiveCamera();
+
+        const webglRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+        webglRenderer.setSize(window.innerWidth, window.innerHeight);
+        webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('aztro-canvas-container').appendChild(webglRenderer.domElement);
+
+        const planetGroup = new THREE.Group();
+        const planetGeo = new THREE.IcosahedronGeometry(35, 3); 
+        const planetMat = new THREE.MeshStandardMaterial({ color: 0xFFB300, roughness: 0.9, metalness: 0.2, flatShading: true });
+        const planet = new THREE.Mesh(planetGeo, planetMat);
+        
+        const atmosphereGeo = new THREE.IcosahedronGeometry(36, 3);
+        const atmosphereMat = new THREE.MeshPhongMaterial({ color: 0xFFB300, transparent: true, opacity: 0.15, wireframe: true, blending: THREE.AdditiveBlending });
+        const atmosphere = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+        
+        planetGroup.add(planet, atmosphere);
+        planetGroup.position.set(0, 0, -100); 
+        aztroScene.add(planetGroup);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5); sunLight.position.set(-60, 30, -50); aztroScene.add(sunLight);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); aztroScene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.5); dirLight.position.set(5, 5, 5); aztroScene.add(dirLight);
+        const yellowHighlight = new THREE.PointLight(0xFFB300, 2.5, 30); yellowHighlight.position.set(-5, -5, 5); aztroScene.add(yellowHighlight);
+        const orbitLight = new THREE.PointLight(0xffffff, 1, 20); aztroScene.add(orbitLight);
+        const logoLight = new THREE.PointLight(0xFFB300, 6.0, 25); logoLight.position.set(0, 0, 0); aztroScene.add(logoLight);
+
+        const hoverSpotlight = new THREE.SpotLight(0xffffff, 0);
+        hoverSpotlight.angle = Math.PI / 6; hoverSpotlight.penumbra = 0.4; hoverSpotlight.distance = 35; hoverSpotlight.decay = 1.5;
+        aztroScene.add(hoverSpotlight); aztroScene.add(hoverSpotlight.target);
+
+        const logoGroup = new THREE.Group(); aztroScene.add(logoGroup);
+        const centerStarShape = new THREE.Shape();
+        const spikes = 14; 
+        for (let i = 0; i < spikes * 2; i++) {
+            const r = i % 2 === 0 ? 3.5 : 1.5; const a = (i / (spikes * 2)) * Math.PI * 2;
+            if(i === 0) centerStarShape.moveTo(Math.cos(a)*r, Math.sin(a)*r); else centerStarShape.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+        }
+        const whiteStarGeo = new THREE.ExtrudeGeometry(centerStarShape, { depth: 0.5, bevelEnabled: true, bevelSize: 0.1, bevelThickness: 0.1 });
+        const whiteStarMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 2.0, roughness: 0.2 });
+        const whiteStarMesh = new THREE.Mesh(whiteStarGeo, whiteStarMat);
+        whiteStarMesh.position.z = -0.25; logoGroup.add(whiteStarMesh);
+
+        const orbitGroup = new THREE.Group(); aztroScene.add(orbitGroup);
+        const interactiveObjects = [];
+
+        const starShape = new THREE.Shape();
+        for (let i = 0; i < 10; i++) {
+            const r = i % 2 === 0 ? 1.2 : 0.5; const a = (i / 10) * Math.PI * 2;
+            if(i === 0) starShape.moveTo(Math.cos(a)*r, Math.sin(a)*r); else starShape.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+        }
+        
+        const basicStarGeo = new THREE.ExtrudeGeometry(starShape, {depth: 0.05, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02});
+        const basicWhiteMat = new THREE.MeshPhysicalMaterial({color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.8});
+
+        const starGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.35, bevelEnabled: true, bevelSize: 0.08, bevelThickness: 0.08 });
+        const starMat = new THREE.MeshPhysicalMaterial({ color: 0xFFB300, roughness: 0.15, metalness: 0.9, emissive: 0xFFB300 });
+        const starMesh = new THREE.Mesh(starGeo, starMat);
+        const whiteStarMatInner = new THREE.MeshPhysicalMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.5, roughness: 0.1 });
+        const whiteStarGeoInner = new THREE.ExtrudeGeometry(starShape, { depth: 0.05, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02 });
+        const frontWhiteStar = new THREE.Mesh(whiteStarGeoInner, whiteStarMatInner); frontWhiteStar.scale.set(0.4, 0.4, 0.4); frontWhiteStar.position.z = 0.22; starMesh.add(frontWhiteStar);
+        const backWhiteStar = frontWhiteStar.clone(); backWhiteStar.position.z = -0.22; backWhiteStar.rotation.y = Math.PI; starMesh.add(backWhiteStar);
+        starMesh.scale.set(0.8, 0.8, 0.8);
+
+        function createPencilModel(withStars = true) {
+            const group = new THREE.Group();
+            const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0xFFB300, clearcoat: 1.0, clearcoatRoughness: 0.1, roughness: 0.4 });
+            const woodBody = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 2, 6), bodyMat);
+            if (withStars) {
+                const blackStarMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, roughness: 0.8 });
+                const blackStarGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.02, bevelEnabled: false });
+                for(let i=0; i<4; i++) {
+                    const bStar = new THREE.Mesh(blackStarGeo, blackStarMat);
+                    bStar.scale.set(0.08, 0.08, 0.08); bStar.position.y = 0.6 - (i * 0.4);
+                    const angle = i * Math.PI * 0.65; bStar.position.x = Math.cos(angle) * 0.21; bStar.position.z = Math.sin(angle) * 0.21;
+                    bStar.rotation.y = -angle + Math.PI/2; bStar.rotation.z = Math.random(); woodBody.add(bStar);
+                }
+            }
+            const woodMat = new THREE.MeshPhysicalMaterial({ color: 0xdeb887, roughness: 0.8 });
+            const tipCone = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.5, 6), woodMat); tipCone.position.y = 1.25;
+            const lead = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 6), new THREE.MeshPhysicalMaterial({color: 0x222222, roughness: 0.5, metalness: 0.3})); lead.position.y = 1.4;
+            const ferruleGroup = new THREE.Group();
+            const fMat = new THREE.MeshPhysicalMaterial({color: 0xFFC107, metalness: 1.0, roughness: 0.2});
+            for(let i=0; i<4; i++){ const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.03, 8, 24), fMat); ring.position.y = -1.05 - (i*0.1); ring.rotation.x = Math.PI/2; ferruleGroup.add(ring); }
+            const eraser = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.4, 16), new THREE.MeshPhysicalMaterial({color: 0xFF8C00, roughness: 0.9})); eraser.position.y = -1.5;
+            group.add(woodBody, tipCone, lead, ferruleGroup, eraser); return group;
+        }
+        const pencilGroup = createPencilModel(true); pencilGroup.scale.set(0.8, 0.8, 0.8);
+
+        const rubikGroup = new THREE.Group(); const gap = 0.45;
+        const cubeColors = [0xFF8C00, 0xFFA500, 0xFFB300, 0xFFC107, 0xFFD700, 0xFFE066]; 
+        const blackCoreMat = new THREE.MeshPhysicalMaterial({ color: 0x050505, roughness: 0.9 });
+        const faceMaterials = cubeColors.map(c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.05, metalness: 0.1, clearcoat: 1.0, clearcoatRoughness: 0.1 }));
+        for(let x=-1; x<=1; x++){
+            for(let y=-1; y<=1; y++){
+                for(let z=-1; z<=1; z++){
+                    const block = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), blackCoreMat);
+                    block.position.set(x*gap, y*gap, z*gap);
+                    const planeGeo = new THREE.PlaneGeometry(0.36, 0.36);
+                    if(x === 1) { const p = new THREE.Mesh(planeGeo, faceMaterials[0]); p.position.x = 0.201; p.rotation.y = Math.PI/2; block.add(p); }
+                    if(x === -1){ const p = new THREE.Mesh(planeGeo, faceMaterials[1]); p.position.x = -0.201; p.rotation.y = -Math.PI/2; block.add(p); }
+                    if(y === 1) { const p = new THREE.Mesh(planeGeo, faceMaterials[2]); p.position.y = 0.201; p.rotation.x = -Math.PI/2; block.add(p); }
+                    if(y === -1){ const p = new THREE.Mesh(planeGeo, faceMaterials[3]); p.position.y = -0.201; p.rotation.x = Math.PI/2; block.add(p); }
+                    if(z === 1) { const p = new THREE.Mesh(planeGeo, faceMaterials[4]); p.position.z = 0.201; block.add(p); }
+                    if(z === -1){ const p = new THREE.Mesh(planeGeo, faceMaterials[5]); p.position.z = -0.201; p.rotation.y = Math.PI; block.add(p); }
+                    rubikGroup.add(block);
+                }
+            }
+        }
+        rubikGroup.scale.set(0.8, 0.8, 0.8);
+
+        const clapGroup = new THREE.Group();
+        const blackClapMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, roughness: 0.4, clearcoat: 0.5 });
+        const whiteClapMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.2, clearcoat: 0.8 });
+        const board = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.8, 0.1), blackClapMat); board.position.y = -0.9;
+        const smallStarGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.1, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02 });
+        const smallStarMat = new THREE.MeshPhysicalMaterial({ color: 0xFFB300, roughness: 0.2, metalness: 0.8, emissive: 0xFFB300 });
+        const clapperStar1 = new THREE.Mesh(smallStarGeo, smallStarMat); clapperStar1.scale.set(0.3, 0.3, 0.3); clapperStar1.position.set(0, 0, 0.06); board.add(clapperStar1);
+        const clapperStar2 = clapperStar1.clone(); clapperStar2.position.set(0, 0, -0.06); clapperStar2.rotation.y = Math.PI; board.add(clapperStar2);
+        
+        const bottomStick = new THREE.Group(); const bsBase = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.3, 0.15), blackClapMat);
+        for(let i=0; i<5; i++){ const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.31, 0.16), whiteClapMat); stripe.position.set(-1 + i*0.5, 0, 0); stripe.rotation.z = -0.3; bottomStick.add(stripe); }
+        bottomStick.add(bsBase); bottomStick.position.y = 0.15;
+        
+        const hingeGroup = new THREE.Group(); hingeGroup.position.set(-1.25, 0.3, 0);
+        const topStick = new THREE.Group(); const tsBase = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.3, 0.15), blackClapMat); tsBase.position.x = 1.25;
+        for(let i=0; i<5; i++){ const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.31, 0.16), whiteClapMat); stripe.position.set(0.25 + i*0.5, 0, 0); stripe.rotation.z = -0.3; topStick.add(stripe); }
+        topStick.add(tsBase); hingeGroup.add(topStick); hingeGroup.rotation.z = 0.4; 
+        const hingePin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.2, 16), new THREE.MeshPhysicalMaterial({color: 0xFFC107, metalness: 1.0})); hingePin.rotation.x = Math.PI/2; hingeGroup.add(hingePin);
+        clapGroup.add(board, bottomStick, hingeGroup); clapGroup.scale.set(0.6, 0.6, 0.6);
+
+        function createDesignToolModel() {
+            const group = new THREE.Group();
+            const accentMat = new THREE.MeshPhysicalMaterial({ color: 0xFFB300, roughness: 0.15, metalness: 0.6, clearcoat: 1.0, emissive: 0xFFB300, emissiveIntensity: 0.15 });
+            const anchorMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, roughness: 0.5, metalness: 0.2 });
+            const handleMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.4, roughness: 0.2 });
+            const p0 = new THREE.Vector3(-1.15, -0.6, 0); const p1 = new THREE.Vector3(-0.35, 0.95, 0);
+            const p2 = new THREE.Vector3(0.35, -0.95, 0); const p3 = new THREE.Vector3(1.15, 0.6, 0);
+            const bezierCurve = new THREE.CubicBezierCurve3(p0, p1, p2, p3);
+            const pathTube = new THREE.Mesh(new THREE.TubeGeometry(bezierCurve, 24, 0.075, 6, false), accentMat);
+            group.add(pathTube);
+
+            [p0, p3].forEach(pt => {
+                const anchor = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.14), anchorMat);
+                anchor.position.copy(pt); anchor.rotation.z = Math.PI / 4; group.add(anchor);
+            });
+
+            [[p0, p1], [p3, p2]].forEach(([from, to]) => {
+                const dir = new THREE.Vector3().subVectors(to, from); const len = dir.length();
+                const handleLine = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, len, 6), handleMat);
+                handleLine.position.copy(from).addScaledVector(dir, 0.5);
+                handleLine.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+                group.add(handleLine);
+                const controlPoint = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 12), handleMat);
+                controlPoint.position.copy(to); group.add(controlPoint);
+            });
+            return group;
+        }
+        const designGroup = createDesignToolModel(); designGroup.scale.set(0.75, 0.75, 0.75);
+
+        applyMayaMode(starMesh); applyMayaMode(pencilGroup); applyMayaMode(rubikGroup); applyMayaMode(clapGroup); applyMayaMode(designGroup);
+
+        const objectsData = [
+            { mesh: starMesh, name: "ABOUT ME", url: null },
+            { mesh: clapGroup, name: "ANIMATION", url: "ani.html" },
+            { mesh: designGroup, name: "GRAPHIC DESIGN", url: "gd.html" },
+            { mesh: pencilGroup, name: "ILLUSTRATIONS", url: "illust.html" },
+            { mesh: rubikGroup, name: "3D MODELS", url: "3d.html" }
+        ];
+
+        objectsData.forEach((obj) => {
+            orbitGroup.add(obj.mesh); obj.mesh.userData = { ...obj };
+            if(obj.mesh.type === "Group") {
+                obj.mesh.traverse(child => { if(child.isMesh) { child.userData = obj.mesh.userData; child.userData.parentGroup = obj.mesh; interactiveObjects.push(child); } });
+            } else { interactiveObjects.push(obj.mesh); }
+        });
+
+        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const navTitle = document.getElementById('nav-title');
+        const canvasContainer = document.getElementById('aztro-canvas-container'); const frontCheckVec = new THREE.Vector3();
+        let hoveredObject = null; let currentFrontObj = null; let lastFrontMesh = null; let mouseActive = false; let isTransitioning = false;
+        let manualRotationOffset = 0; let isDraggingOrbit = false; let previousMouseX = 0; let dragVelocity = 0; let hasDragged = false;
+
+        const hoverPng = document.getElementById('hover-png');
+        document.querySelectorAll('.contact-item').forEach((item, index) => {
+            item.addEventListener('mouseenter', () => { const imgIndex = (index % 4) + 1; hoverPng.src = `ic${imgIndex}.png`; });
+            item.addEventListener('mouseleave', () => { hoverPng.src = 'ic1.png'; });
+        });
+
+        window.addEventListener('mousedown', (e) => {
+            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#bottom-menu-bar') || e.target.closest('#yellow-panel') || e.target.closest('#yellow-panel-left') || isTransitioning) return;
+            isDraggingOrbit = true; hasDragged = false; previousMouseX = e.clientX;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if(currentView !== 'aztro' || isTransitioning) return;
+            mouseActive = true;
+            if(isDraggingOrbit) {
+                const deltaX = e.clientX - previousMouseX;
+                if(Math.abs(deltaX) > 2) hasDragged = true;
+                dragVelocity = deltaX * 0.003; manualRotationOffset += dragVelocity; previousMouseX = e.clientX;
+            }
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1; mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        }, { passive: true });
+
+        function updateHoverState() {
+            raycaster.setFromCamera(mouse, aztroCamera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, false);
+
+            if (intersects.length > 0) {
+                let obj = intersects[0].object; let mainMesh = obj.userData.parentGroup || obj;
+                if (hoveredObject !== mainMesh) {
+                    if (hoveredObject) gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX, y: hoveredObject.userData.initialScaleY, z: hoveredObject.userData.initialScaleZ, duration: 0.3 });
+                    hoveredObject = mainMesh;
+                    if(!hoveredObject.userData.initialScaleX) { hoveredObject.userData.initialScaleX = hoveredObject.scale.x; hoveredObject.userData.initialScaleY = hoveredObject.scale.y; hoveredObject.userData.initialScaleZ = hoveredObject.scale.z; }
+                    gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX * 1.4, y: hoveredObject.userData.initialScaleY * 1.4, z: hoveredObject.userData.initialScaleZ * 1.4, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+                    if (window.innerWidth > 768) { navTitle.textContent = hoveredObject.userData.name; navTitle.style.color = "#FFB300"; navTitle.style.textShadow = "0 0 25px rgba(255, 179, 0, 1)"; }
+                    document.body.style.cursor = 'pointer';
+                    hoverSpotlight.intensity = 120; 
+                }
+            } else {
+                if (hoveredObject) {
+                    gsap.to(hoveredObject.scale, { x: hoveredObject.userData.initialScaleX, y: hoveredObject.userData.initialScaleY, z: hoveredObject.userData.initialScaleZ, duration: 0.3 });
+                    hoveredObject = null;
+                    if (window.innerWidth > 768) { navTitle.textContent = "SCROLL OR CLICK THE 3D OBJECT"; navTitle.style.color = "#ffffff"; navTitle.style.textShadow = "0 0 10px rgba(255, 255, 255, 0.5)"; }
+                    hoverSpotlight.intensity = 0;
+                }
+                document.body.style.cursor = isDraggingOrbit ? 'grabbing' : 'default';
+            }
+        }
+
+        window.addEventListener('mouseup', () => { isDraggingOrbit = false; });
+        window.addEventListener('mouseleave', () => { isDraggingOrbit = false; });
+
+        window.addEventListener('touchstart', (e) => {
+            if(currentView !== 'aztro' || e.target.closest('#contact-area') || e.target.closest('#bottom-nav') || e.target.closest('#bottom-menu-bar') || e.target.closest('#yellow-panel') || e.target.closest('#yellow-panel-left') || isTransitioning) return;
+            mouseActive = false; isDraggingOrbit = true; hasDragged = false; previousMouseX = e.touches[0].clientX;
+        }, {passive: false});
+        window.addEventListener('touchmove', (e) => {
+            if(currentView !== 'aztro' || isTransitioning) return;
+            if(isDraggingOrbit) { e.preventDefault(); const deltaX = e.touches[0].clientX - previousMouseX; if(Math.abs(deltaX) > 2) hasDragged = true; dragVelocity = deltaX * 0.006; manualRotationOffset += dragVelocity; previousMouseX = e.touches[0].clientX; }
+        }, {passive: false});
+        window.addEventListener('touchend', () => { isDraggingOrbit = false; });
+
+        function execTransition(targetMesh) {
+            isTransitioning = true; hoverSpotlight.intensity = 0;
+            const targetPos = new THREE.Vector3(); targetMesh.getWorldPosition(targetPos);
+            
+            for(let i=0; i<10; i++) {
+                const ps = new THREE.Mesh(basicStarGeo, basicWhiteMat); ps.scale.set(0.06, 0.06, 0.06); ps.position.copy(targetPos); aztroScene.add(ps);
+                const randomAngle = Math.random() * Math.PI * 2; const randomY = (Math.random() - 0.5) * 2; const radius = 1.2 + Math.random();
+                gsap.to(ps.position, { x: targetPos.x + Math.cos(randomAngle) * radius, y: targetPos.y + randomY * radius, z: targetPos.z + Math.sin(randomAngle) * radius, duration: 0.6 + Math.random()*0.3, ease: "power2.out" });
+                gsap.to(ps.rotation, { x: Math.random() * Math.PI * 4, y: Math.random() * Math.PI * 4, duration: 0.8 });
+                gsap.to(ps.scale, { x: 0, y: 0, z: 0, duration: 0.3, delay: 0.3 + Math.random()*0.2, ease: "back.in(2)", onComplete: () => aztroScene.remove(ps) });
+            }
+            
+            gsap.to(aztroCamera.position, { x: targetPos.x, y: targetPos.y, z: targetPos.z + 1.5, duration: 1.5, ease: "power3.in" });
+
+            setTimeout(() => {
+                if (targetMesh.userData.url) {
+                    window.location.href = targetMesh.userData.url;
+                } else {
+                    const aztroView = document.getElementById('aztro-view'); const aboutView = document.getElementById('about-view');
+                    aztroView.style.opacity = 0; aztroView.style.pointerEvents = 'none'; aboutView.style.pointerEvents = 'auto';
+                    setTimeout(() => { aboutView.style.opacity = 1; currentView = 'about'; isTransitioning = false; }, 500);
+                }
+            }, 1200);
+        }
+
+        window.addEventListener('click', (e) => {
+            if (currentView === 'aztro' && hoveredObject && !isTransitioning && !hasDragged && !e.target.closest('#contact-area') && !e.target.closest('#bottom-nav') && !e.target.closest('#bottom-menu-bar') && !e.target.closest('#yellow-panel') && !e.target.closest('#yellow-panel-left')) {
+                execTransition(hoveredObject);
+            }
+        });
+        navTitle.addEventListener('click', () => { if (currentView === 'aztro' && window.innerWidth <= 768 && currentFrontObj && !isTransitioning) execTransition(currentFrontObj); });
+
+        [['menu-animation', clapGroup], ['menu-graphic-design', designGroup], ['menu-illustration', pencilGroup], ['menu-3d-models', rubikGroup]].forEach(([id, mesh]) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('click', (e) => { if (currentView !== 'aztro' || isTransitioning) return; e.preventDefault(); execTransition(mesh); });
+        });
+        document.getElementById('menu-about').addEventListener('click', () => { if (currentView !== 'aztro' || isTransitioning) return; execTransition(starMesh); });
+
+        let glitchFramesRemaining = 0;
+        const aboutScene = new THREE.Scene(); aboutScene.rotation.x = -0.15; aboutScene.rotation.y = 0;
+        const aboutCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000); aboutCamera.position.set(0, 0, 1400); 
+
+        const aboutContainer = document.getElementById('about-canvas-container');
+        const cssRenderer = new CSS3DRenderer(); cssRenderer.setSize(window.innerWidth, window.innerHeight); aboutContainer.appendChild(cssRenderer.domElement);
+        const aboutWebglRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); aboutWebglRenderer.setSize(window.innerWidth, window.innerHeight); aboutWebglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); document.getElementById('about-webgl-container').appendChild(aboutWebglRenderer.domElement);
+
+        const aboutAmbient = new THREE.AmbientLight(0xffffff, 1.2); aboutScene.add(aboutAmbient);
+        const aboutDir = new THREE.DirectionalLight(0xffffff, 1.5); aboutDir.position.set(500, 500, 500); aboutScene.add(aboutDir);
+
+        const aboutPencil = createPencilModel(false); applyMayaMode(aboutPencil); aboutPencil.scale.set(160, 160, 160); aboutPencil.position.set(-950, 0, 150); aboutPencil.rotation.z = Math.PI / 2; aboutPencil.rotation.y = Math.PI / 4; aboutPencil.rotation.x = Math.PI / 6; aboutScene.add(aboutPencil);
+
+        const matteSphereGeo = new THREE.SphereGeometry(80, 32, 32); const matteSphereMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, metalness: 0.0 });
+        const whiteSphere = new THREE.Mesh(matteSphereGeo, matteSphereMat); whiteSphere.position.set(650, -600, 150); aboutScene.add(whiteSphere);
+
+        const leftGroup = new THREE.Group(); leftGroup.position.x = -430; leftGroup.rotation.y = 0.14;
+        const leftCover = new CSS3DObject(Object.assign(document.createElement('div'), {className: 'book-cover cover-left'})); leftCover.position.z = -60; leftCover.position.x = -5; leftGroup.add(leftCover);
+        const leftStack = new CSS3DObject(Object.assign(document.createElement('div'), {className: 'paper-stack stack-left'})); leftStack.position.z = -30; leftGroup.add(leftStack);
+
+        const leftDiv = document.createElement('div'); leftDiv.className = 'book-page left-page'; leftDiv.innerHTML = `<img src="stick1.png" class="sticker sticker-1" alt="Sticker 1"><div class="main-character-box"><img src="fon.png" class="bg-fon" alt="Background"><img src="1.gif" class="fg-avatar" alt="Avatar"></div>`;
+        const leftPage3D = new CSS3DObject(leftDiv); leftPage3D.position.z = 0; leftGroup.add(leftPage3D); aboutScene.add(leftGroup);
+
+        const rightGroup = new THREE.Group(); rightGroup.position.x = 430; rightGroup.rotation.y = -0.14;
+        const rightCover = new CSS3DObject(Object.assign(document.createElement('div'), {className: 'book-cover cover-right'})); rightCover.position.z = -60; rightCover.position.x = 5; rightGroup.add(rightCover);
+        const rightStack = new CSS3DObject(Object.assign(document.createElement('div'), {className: 'paper-stack stack-right'})); rightStack.position.z = -30; rightGroup.add(rightStack);
+
+        const rightDiv = document.createElement('div'); rightDiv.className = 'book-page right-page';
+        rightDiv.innerHTML = `<img src="stick2.png" class="sticker sticker-2" alt="Sticker 2"><h1 id="page-title">Loading...</h1><div class="content-area" id="page-content"></div><div class="tabs-container"><div class="tab" data-index="0">INFO</div><div class="tab" data-index="1">LIKES</div><div class="tab" data-index="2">REFS</div><div class="tab" data-index="3">FIND ME</div></div>`;
+        const rightPage3D = new CSS3DObject(rightDiv); rightPage3D.position.z = 0; rightGroup.add(rightPage3D); aboutScene.add(rightGroup);
+
+        const pagesData = [
+            { type: "about", title: "ABOUT ME", bio: "Digital Artist & Animator (@aztroshaper). With a primary focus on illustration and 2D animation, my work revolves around dynamic character design and engaging visual narratives. Driven by continuous creative development, I also integrate stop-motion and 3D modeling into my pipeline to further expand the boundaries of digital storytelling.", skills: [{ name: "Illustration", percent: 95 }, { name: "Animation", percent: 90 }, { name: "Stop-Motion", percent: 60 }, { name: "3D Modeling", percent: 40 }] },
+            { type: "gallery", title: "LIKES", items: [{ src: "like1.gif", text: "horror stuff" }, { src: "like2.gif", text: "space" }, { src: "like3.gif", text: "biology/deep sea creatures" }, { src: "like4.gif", text: "dreamcore" }] },
+            { type: "references", title: "REFERENCES", items: [{ img: "ref1.png", text: "<strong>Universidad Autónoma de la Laguna (UAL)</strong>Bachelor's Degree in Graphic Design and Visual Communication.<br>CUM LAUDE Recognition." }, { img: "ref2.png", text: "<strong>Centro de Artes del Norte</strong>Two-year Diploma in Artistic Media Exploration." }, { img: "ref3.png", text: "<strong>Crystal Soul Arena</strong>Development of illustrations for mobile card game." }, { img: "ref4.png", text: "<strong>Pixelatl International Animation Festival</strong>Selected project \"Atemporal\", featured at one of Latin America's leading animation, comics and games festivals." }] },
+            { type: "contact-links", title: "CONTACT", links: [{ name: "Instagram", icon: "fab fa-instagram", url: "https://instagram.com/aztroshaper" }, { name: "Message", icon: "far fa-paper-plane", url: "https://instagram.com/direct/t/aztroshaper" }, { name: "TikTok", icon: "fab fa-tiktok", url: "https://tiktok.com/@aztroshaper" }, { name: "Pi.fyi", icon: "fas fa-star", url: "https://www.pi.fyi/u/aztroshaper" }, { name: "YouTube", icon: "fab fa-youtube", url: "https://www.youtube.com/@Aztroshaper" }, { name: "ArtStation", icon: "fab fa-artstation", url: "https://www.artstation.com/aztroshaper" }] }
+        ];
+
+        const titleElement = rightDiv.querySelector('#page-title'); const contentElement = rightDiv.querySelector('#page-content');
+        function loadPage(index) {
+            const data = pagesData[index]; titleElement.innerText = data.title; contentElement.innerHTML = '';
+            contentElement.style.animation = 'none'; contentElement.offsetHeight; contentElement.style.animation = null; 
+
+            if (data.type === "about") {
+                let html = `<div class="bio-text">${data.bio}</div><div class="skills-container">`;
+                data.skills.forEach(skill => { const filledStarsCount = Math.round(skill.percent / 20); const starsStr = '★'.repeat(filledStarsCount) + '☆'.repeat(5 - filledStarsCount); html += `<div class="skill-item"><div class="skill-header"><div class="skill-title">${skill.name}</div><div class="skill-stars">${starsStr}</div></div><div class="skill-bar-bg"><div class="skill-bar-fill" style="--target-width: ${skill.percent}%;"></div></div></div>`; });
+                contentElement.innerHTML = html + '</div>';
+            } else if (data.type === "gallery") {
+                let gridHTML = '<div class="grid-container">'; data.items.forEach(item => { gridHTML += `<div class="grid-item-wrapper"><div class="grid-item"><img src="${item.src}" alt="Content"></div><div class="like-text">${item.text}</div></div>`; }); contentElement.innerHTML = gridHTML + '</div>';
+            } else if (data.type === "references") {
+                let refHTML = '<div class="ref-container">'; data.items.forEach(item => { refHTML += `<div class="ref-item"><div class="ref-img-wrapper"><img src="${item.img}" alt="Reference"></div><div class="ref-text">${item.text}</div></div>`; }); contentElement.innerHTML = refHTML + '</div>';
+            } else if (data.type === "contact-links") {
+                let linksHTML = '<div class="contact-list">'; data.links.forEach(link => { linksHTML += `<a href="${link.url}" target="_blank" class="about-contact-btn"><i class="${link.icon}"></i> ${link.name}</a>`; }); contentElement.innerHTML = linksHTML + '</div>';
+            }
+        }
+        rightDiv.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', (e) => { loadPage(e.currentTarget.getAttribute('data-index')); }); });
+        loadPage(0);
+
+        document.getElementById('btn-close-about').addEventListener('click', () => {
+            if(isTransitioning) return;
+            isTransitioning = true; const aztroView = document.getElementById('aztro-view'); const aboutView = document.getElementById('about-view');
+            aboutView.style.opacity = 0; aboutView.style.pointerEvents = 'none';
+            gsap.to(aztroCamera.position, { x: 0, y: 0, z: window.innerWidth <= 768 ? 16 : 10, duration: 1.5, ease: "power3.out" });
+            setTimeout(() => { aztroView.style.opacity = 1; aztroView.style.pointerEvents = 'auto'; currentView = 'aztro'; isTransitioning = false; }, 800);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (document.hidden) return;
+            const time = clock.getElapsedTime(); const delta = Math.min(clock.getDelta(), 0.1);
+
+            if(currentView === 'aztro') {
+                dragVelocity *= Math.pow(0.95, delta * 60); manualRotationOffset += dragVelocity;
+                planetGroup.rotation.y += 0.03 * delta; planetGroup.rotation.x = Math.sin(time * 0.1) * 0.05;
+                orbitLight.position.x = Math.sin(time) * 6; orbitLight.position.z = Math.cos(time) * 6; orbitLight.position.y = Math.sin(time * 0.5) * 3;
+                
+                if(!isTransitioning){
+                    orbitGroup.rotation.y = (time * 0.3) + manualRotationOffset;
+                    logoGroup.rotation.x = -0.3 + Math.sin(time * 0.5) * 0.05; logoGroup.position.y = Math.sin(time * 2) * 0.15;
+
+                    let frontMesh = null; let frontZ = -Infinity;
+                    objectsData.forEach((obj, i) => {
+                        const radius = window.innerWidth < 768 ? 5.3 : 6.2; const angle = (i / objectsData.length) * Math.PI * 2;
+                        obj.mesh.position.x = Math.cos(angle) * radius; obj.mesh.position.z = Math.sin(angle) * radius; obj.mesh.position.y = Math.sin(time * 1.5 + i) * 0.6;
+                        obj.mesh.rotation.x += 0.6 * delta; obj.mesh.rotation.y += 0.9 * delta;
+
+                        obj.mesh.getWorldPosition(frontCheckVec);
+                        if (frontCheckVec.z > frontZ) { frontZ = frontCheckVec.z; frontMesh = obj.mesh; }
+                    });
+
+                    currentFrontObj = frontMesh;
+                    if (window.innerWidth <= 768 && !hoveredObject && frontMesh && frontMesh !== lastFrontMesh) { navTitle.textContent = `TAP TO OPEN: ${frontMesh.userData.name}`; lastFrontMesh = frontMesh; }
+                    if (mouseActive) updateHoverState();
+
+                    if(hoveredObject) { hoverSpotlight.target.position.copy(hoveredObject.position); hoverSpotlight.position.set(hoveredObject.position.x, hoveredObject.position.y + 6, hoveredObject.position.z + 6); }
+                }
+                
+                if (!isTransitioning) {
+                    if (Math.random() < 0.005) glitchFramesRemaining = Math.floor(Math.random() * 5) + 2; 
+                    if (glitchFramesRemaining > 0) { aztroCamera.position.y += (Math.random() - 0.5) * 0.8; aztroCamera.position.x += (Math.random() - 0.5) * 0.5; canvasContainer.style.filter = `contrast(2) saturate(2) sepia(0.3) hue-rotate(15deg) blur(1px)`; glitchFramesRemaining--; } 
+                    else { aztroCamera.position.y = 0; aztroCamera.position.x = 0; canvasContainer.style.filter = `contrast(1.2) saturate(1.3) sepia(0.15)`; }
+                }
+                webglRenderer.render(aztroScene, aztroCamera);
+            } 
+            else if (currentView === 'about') {
+                aboutPencil.position.y = Math.sin(time * 2) * 25; aboutPencil.rotation.x = (Math.PI / 6) + Math.sin(time * 1.5) * 0.05;
+                whiteSphere.position.y = -600 + Math.sin(time * 3) * 20;
+                cssRenderer.render(aboutScene, aboutCamera); aboutWebglRenderer.render(aboutScene, aboutCamera);
+            }
+        }
+        animate();
+
+        let resizeTimeout = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                aztroCamera.aspect = window.innerWidth / window.innerHeight; aztroCamera.updateProjectionMatrix(); webglRenderer.setSize(window.innerWidth, window.innerHeight); updateResponsiveCamera();
+                aboutCamera.aspect = window.innerWidth / window.innerHeight; aboutCamera.updateProjectionMatrix(); cssRenderer.setSize(window.innerWidth, window.innerHeight); aboutWebglRenderer.setSize(window.innerWidth, window.innerHeight);
+            }, 120);
+        });
+
+        window.addEventListener('keyup', e => { if(e.key === 'PrintScreen') { document.getElementById('anti-ss').style.opacity = 1; setTimeout(()=>document.getElementById('anti-ss').style.opacity = 0, 1500); } });
+        window.addEventListener('keydown', e => { if((e.ctrlKey || e.metaKey) && e.shiftKey && ['s','S','3','4','5'].includes(e.key)) { document.getElementById('anti-ss').style.opacity = 1; setTimeout(()=>document.getElementById('anti-ss').style.opacity = 0, 1500); } });
+        document.addEventListener('visibilitychange', () => { if(document.hidden) document.getElementById('anti-ss').style.opacity = 1; else document.getElementById('anti-ss').style.opacity = 0; });
+    </script>
 </body>
 </html>
