@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFB300'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'Aztro';
+            src: url('aztro.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --black: #000000;
+            --yellow: #FFB300;
+            --white: #f5f5f5;
+            --charcoal: #111111;
+            --text-gray: #999999;
+            --menu-bar-h: 78px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--black);
+            background-image: radial-gradient(circle at 50% 0%, #151107 0%, #030303 70%);
+            color: var(--white);
+            font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+            padding-bottom: var(--menu-bar-h);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        /* === CIRCUS JAGGED EDGE === */
+        .picos-blancos-top {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 16px;
+            background-color: var(--white);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 95% 15%, 90% 100%, 85% 15%, 80% 100%, 75% 15%, 70% 100%, 65% 15%, 60% 100%, 55% 15%, 50% 100%, 45% 15%, 40% 100%, 35% 15%, 30% 100%, 25% 15%, 20% 100%, 15% 15%, 10% 100%, 5% 15%, 0% 100%);
+            z-index: 500;
+            pointer-events: none;
+        }
+
+        /* === TOP NAVIGATION === */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px 5%;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 179, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-back {
+            color: var(--yellow);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-back i { font-size: 0.75rem; }
+        .btn-back:hover {
+            color: var(--white);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .brand-mark {
+            color: var(--white);
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+
+        .sub-menu {
+            position: fixed;
+            top: 65px;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(3,3,3,0.95), rgba(3,3,3,0));
+            padding: 20px 5% 40px 5%;
+            z-index: 99;
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .sub-menu a {
+            pointer-events: auto;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .sub-menu a:hover { color: var(--yellow); }
+        .sub-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background-color: var(--yellow);
+            transition: width 0.4s ease;
+        }
+        .sub-menu a:hover::after { width: 100%; }
+
+        .spacer { height: 160px; }
+
+        /* === ANIMATIONS === */
+        .anim-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .anim-reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+
+        /* === ACT DIVIDER === */
+        .act-divider {
+            display: flex; align-items: center; justify-content: center;
+            gap: 14px; width: 90%; max-width: 900px; height: 20px;
+            margin: 0 auto 70px auto; overflow: hidden;
+        }
+        .act-divider .bulb {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: var(--yellow);
+            box-shadow: 0 0 8px var(--yellow), 0 0 14px var(--yellow);
+            animation: bulb-blink 0.8s infinite alternate; flex-shrink: 0;
+        }
+        .act-divider .bulb.even {
+            background: #fff; box-shadow: 0 0 8px #fff, 0 0 14px #fff;
+            animation-delay: 0.4s;
+        }
+        @keyframes bulb-blink {
+            0% { opacity: 0.25; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
+        /* === PROJECT SECTION STRUCTURE === */
+        .project-section {
+            padding-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* GIF BACKGROUNDS FOR PROJECTS */
+        #wonders::before, #sinistars::before, #ink::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 600px;
+            background-size: cover;
+            background-position: center top;
+            opacity: 0.2; 
+            z-index: -1;
+            pointer-events: none;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+        
+        #wonders::before { background-image: url('wonders.gif'); }
+        #sinistars::before { background-image: url('sinis.gif'); }
+        #ink::before { background-image: url('ink.gif'); }
+
+        .project-title {
+            text-align: center;
+            color: var(--white);
+            font-size: 4.5rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 179, 0, 0.15);
+        }
+
+        .project-subtitle {
+            text-align: center;
+            color: var(--yellow);
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
+
+        /* === WONDERS HERO LAYOUT === */
+        .wonders-hero-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 70px auto;
+            flex-wrap: wrap;
+        }
+
+        .hero-side-btn {
+            flex: 0 0 auto;
+        }
+
+        .ext-fs-btn {
+            background: rgba(17, 17, 17, 0.7);
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .ext-fs-btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 179, 0, 0.6);
+        }
+
+        .hero-center-video {
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 380px; 
+        }
+
+        .hero-side-text {
+            flex: 1;
+            min-width: 300px;
+            text-align: justify;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+        .hero-side-text strong {
+            color: var(--white);
+            font-weight: normal;
+        }
+
+        /* === CUSTOM VIDEO PLAYER INTERFACE === */
+        .custom-video-container {
+            position: relative;
+            background: #000;
+            border: 2px solid #000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s;
+            overflow: hidden;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-video-container:hover {
+            border-color: var(--yellow);
+            box-shadow: 0 15px 40px rgba(255, 179, 0, 0.25);
+        }
+
+        .ratio-16-9 { aspect-ratio: 16 / 9; width: 100%; }
+        .ratio-9-16 { aspect-ratio: 9 / 16; width: 100%; max-width: 380px; margin: 0 auto; }
+
+        .hero-video { width: 90%; margin: 0 auto 70px auto; }
+        .hero-video.ratio-16-9 { max-width: 1200px; }
+
+        /* Estilo aplicado ahora para los iframes de YT */
+        .custom-video-container iframe {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            background: #000;
+            display: block;
+            border: none;
+        }
+
+        /* Overlay & Big Play Button */
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: opacity 0.4s ease;
+        }
+        .video-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .play-btn {
+            position: relative;
+            z-index: 3;
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 2px solid var(--yellow);
+            color: var(--yellow);
+            font-size: 2.2rem;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; justify-content: center;
+            padding-left: 6px;
+        }
+        .play-btn:hover {
+            transform: scale(1.15);
+            background: var(--yellow);
+            color: var(--black);
+            box-shadow: 0 0 25px rgba(255, 179, 0, 0.6);
+        }
+
+        .custom-video-container.playing .video-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* === INTERNAL CUSTOM CONTROLS === */
+        .video-controls {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 40px 15px 15px 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        .custom-video-container:hover .video-controls,
+        .custom-video-container.paused .video-controls {
+            opacity: 1;
+        }
+        .custom-video-container .video-controls {
+            pointer-events: none;
+        }
+        .custom-video-container.playing .video-controls,
+        .custom-video-container.paused .video-controls {
+            pointer-events: auto;
+        }
+
+        .control-btn {
+            background: none; border: none;
+            color: var(--white);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .control-btn:hover { color: var(--yellow); transform: scale(1.1); }
+
+        .progress-bar {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            height: 4px;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            transition: height 0.2s;
+        }
+        .progress-bar:hover { height: 6px; }
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--yellow);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 179, 0, 0.8);
+        }
+
+        /* === VIDEO GRID === */
+        .grid-header { text-align: center; margin-bottom: 50px; }
+        .grid-header h3 {
+            color: var(--white); font-weight: normal; text-transform: uppercase;
+            letter-spacing: 6px; font-size: 1.2rem;
+        }
+        .grid-header h3 span { color: var(--yellow); }
+
+        .video-grid {
+            display: grid; gap: 30px; width: 90%; max-width: 1400px;
+            margin: 0 auto; justify-content: center;
+        }
+        .grid-16-9 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+        .grid-9-16 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+        .video-card { display: flex; flex-direction: column; gap: 12px; }
+        .video-card .custom-video-container:hover { transform: translateY(-6px); }
+
+        .video-caption {
+            text-align: center; color: var(--text-gray); font-size: 0.8rem;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center; padding: 70px 20px 40px 20px;
+            color: var(--text-gray); font-size: 0.8rem;
+            letter-spacing: 3px; text-transform: uppercase;
+        }
+        .footer span { color: var(--yellow); font-weight: normal; }
+        .footer-social { display: flex; justify-content: center; gap: 26px; margin-bottom: 26px; }
+        .footer-social a { color: var(--text-gray); font-size: 1.1rem; transition: color 0.3s, transform 0.3s; }
+        .footer-social a:hover { color: var(--yellow); transform: translateY(-3px); }
+
+        /* === BOTTOM MENU BAR === */
+        #bottom-menu-bar {
+            position: fixed; left: 0; bottom: 0;
+            width: 100%; height: var(--menu-bar-h); z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            gap: clamp(16px, 4vw, 58px);
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 35%, #000 100%);
+            border-top: 2px solid var(--yellow);
+            box-shadow: 0 -12px 30px rgba(0,0,0,0.55), 0 -1px 18px rgba(255,179,0,0.2);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            padding: 6px 20px calc(env(safe-area-inset-bottom, 0px)) 20px; box-sizing: border-box;
+        }
+
+        .menu-bar-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; background: none; border: none; cursor: pointer; text-decoration: none;
+            color: var(--white); font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 11px; white-space: nowrap;
+            transition: color 0.25s ease, transform 0.25s ease; padding: 8px 4px;
+        }
+        .menu-bar-item i {
+            font-size: 19px; display: block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease, text-shadow 0.25s ease;
+        }
+        .menu-bar-item:hover, .menu-bar-item.active { color: var(--yellow); }
+        .menu-bar-item:hover i, .menu-bar-item.active i { text-shadow: 0 0 14px rgba(255,179,0,0.9); }
+        .menu-bar-item:hover { transform: translateY(-4px); }
+        .menu-bar-item:hover i { transform: scale(1.18); }
+
+        @media print { body { display: none !important; } }
+        @media (max-width: 900px) {
+            .project-title { font-size: 3rem; letter-spacing: 10px; }
+            .sub-menu { gap: 20px; flex-wrap: wrap; }
+            .hero-side-btn { order: 3; }
+        }
+        @media (max-width: 768px) {
+            :root { --menu-bar-h: 62px; }
+            .picos-blancos-top { height: 10px; }
+            .menu-bar-item { font-size: 8px; gap: 3px; padding: 6px 3px; }
+            .menu-bar-item i { font-size: 16px; }
+            .brand-mark { display: none; }
+        }
+        @media (max-width: 400px) {
+            .menu-bar-item span { display: none; }
+            .menu-bar-item i { font-size: 20px; }
+            #bottom-menu-bar { gap: clamp(10px, 7vw, 26px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="picos-blancos-top"></div>
+
+    <header class="top-bar">
+        <a href="index.html" class="btn-back"><i class="fas fa-chevron-left"></i> Back to Portfolio</a>
+        <span class="brand-mark">Aztroshaper™</span>
+    </header>
+
+    <nav class="sub-menu">
+        <a href="#wonders">Under the Wonders of Tomorrow</a>
+        <a href="#sinistars">Sinistars</a>
+        <a href="#ink">Invisible Ink</a>
+        <a href="#chillin">Chillin' n Friends</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <!-- ================= PROJECT 1: UNDER THE WONDERS OF TOMORROW ================= -->
+    <section id="wonders" class="project-section">
+        <h1 class="project-title anim-reveal">Under the Wonders of Tomorrow</h1>
+        <p class="project-subtitle anim-reveal delay-1">Latest animation</p>
+
+        <!-- LAYOUT HERO -->
+        <div class="wonders-hero-layout anim-reveal delay-2">
+            <div class="hero-side-btn">
+                <button class="ext-fs-btn" id="wonders-ext-fs" aria-label="Pantalla Completa">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+            
+            <div class="hero-center-video">
+                <div class="custom-video-container ratio-9-16" id="wonders-main-vid">
+                    <div class="yt-player-placeholder" data-id="c9EYbh_9hNs" data-start="59"></div>
+                    <div class="video-overlay" style="background: transparent;">
+                        <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
+                    </div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-side-text">
+                <p>
+                    <strong>Atemporal: Under the Wonders of Tomorrow</strong> Six matriarchs of a dark realm guide their daughters toward a tragic and inescapable sacrifice. Each embodies a primordial pillar to forge the legacies that will decide the end of their eras.
+                    <br><br>
+                    <strong>TECHNICAL SHEET</strong>
+                     <br>
+                    <strong>Technique:</strong> Hybrid Stop Motion Animation
+                    <br><strong>Production Duration:</strong> 1 Week (Production and Launch)
+                    <br> <strong>Cast n' Voice Talents:</strong> Catalina Islas, Perlinka, Laura López, <br>Frida Molina, Andrea Cabrales (Mister Sadic) and Aztroshaper
+                    <br><br>
+                    <strong>Production Crew</strong>
+                        <br>
+                    <strong>3D and 2D Animation and Modeling:</strong> Aztroshaper
+    <br>
+                    <strong>Puppet Creation:</strong> Aztroshaper and Ariel Contreras
+                    <br><br>
+                    <strong> Software Used</strong> <br>
+                       <strong>Autodesk Maya</strong> 3D modeling, 
+                       <strong>Adobe Photoshop</strong> 2D asset creation and texturing, 
+                       <strong>Paint Tool SAI</strong> Digital illustration and 2D artwork, 
+                       <strong>Clipchamp</strong> Video editing and post-production, 
+                       <strong>Wondershare Filmora</strong> Video editing and effects, 
+                       <strong>Audacity</strong> Voice recording and audio editing.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid-header anim-reveal">
+            <h3><span>More</span> From This Project</h3>
+        </div>
+        
+        <div class="video-grid grid-9-16 anim-reveal">
+            <!-- Alma -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="c9EYbh_9hNs" data-start="21"></div>
+                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Alma</div>
+            </div>
+            <!-- Arte -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="h3Pu6VU8ZdU" data-start="58"></div>
+                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Arte</div>
+            </div>
+            <!-- Bestias -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="zzeDLyvwwqo" data-start="38"></div>
+                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Bestias</div>
+            </div>
+            <!-- Creación -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="gcLzvvvFtTA" data-start="32"></div>
+                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Creación</div>
+            </div>
+            <!-- Cosecha -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="wisOIiDe_CE" data-start="25"></div>
+                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
+                        <input type="range" class="progress-bar" value="0" min="0" max="100">
+                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
+                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Cosecha</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+    <!-- ================= PROJECT 2: SINISTARS ================= -->
+    <section id="sinistars" class="project-section">
+        <h1 class="project-title anim-reveal">Sinistars</h1>
+        <p class="project-subtitle anim-reveal delay-1">Animated Short</p>
+
+        <!-- Video Principal 16:9 -->
+        <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
+            <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+            <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/111111/FFB300?text=Sinistars');">
+                <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="video-controls">
+                <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                <input type="range" class="progress-bar" value="0" min="0" max="100">
+                <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
+                <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+
+        <div class="grid-header anim-reveal">
+            <h3><span>More</span> From This Project</h3>
+        </div>
+        
+        <!-- 5 CLIPS EN 9:16 -->
+        <div class="video-grid grid-9-16 anim-reveal">
+            <!-- 1 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 01</div>
+            </div>
+            <!-- 2 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 02</div>
+            </div>
+            <!-- 3 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+03');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 03</div>
+            </div>
+            <!-- 4 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+04');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 04</div>
+            </div>
+            <!-- 5 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+05');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 05</div>
+            </div>
+        </div>
+
+        <!-- 2 CLIPS EN 16:9 ABAJO -->
+        <div class="video-grid grid-16-9 anim-reveal" style="margin-top: 50px;">
+            <div class="video-card">
+                <div class="custom-video-container ratio-16-9">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/1a1a1a/FFB300?text=Wide+Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Wide Clip 01</div>
+            </div>
+            <div class="video-card">
+                <div class="custom-video-container ratio-16-9">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/1a1a1a/FFB300?text=Wide+Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Wide Clip 02</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+    <!-- ================= PROJECT 3: INVISIBLE INK ================= -->
+    <section id="ink" class="project-section">
+        <h1 class="project-title anim-reveal">Invisible Ink</h1>
+        <p class="project-subtitle anim-reveal delay-1">Animated Project</p>
+
+        <!-- Video Principal únicamente -->
+        <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
+            <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+            <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/111111/FFB300?text=Invisible+Ink');">
+                <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="video-controls">
+                <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                <input type="range" class="progress-bar" value="0" min="0" max="100">
+                <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
+                <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+    <!-- ================= PROJECT 4: CHILLIN' N FRIENDS ================= -->
+    <section id="chillin" class="project-section">
+        <h1 class="project-title anim-reveal">Chillin' n Friends</h1>
+        <p class="project-subtitle anim-reveal delay-1">Short Clips</p>
+
+        <!-- Primer bloque: 4 CLIPS EN 9:16 -->
+        <div class="video-grid grid-9-16 anim-reveal delay-2">
+            <!-- Clip 1 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 01</div>
+            </div>
+            <!-- Clip 2 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 02</div>
+            </div>
+            <!-- Clip 3 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+03');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 03</div>
+            </div>
+            <!-- Clip 4 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+04');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 04</div>
+            </div>
+        </div>
+
+        <!-- Segundo bloque: Otros 4 CLIPS EN 9:16 ABAJO -->
+        <div class="video-grid grid-9-16 anim-reveal" style="margin-top: 30px;">
+            <!-- Clip 5 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+05');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 05</div>
+            </div>
+            <!-- Clip 6 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+06');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 06</div>
+            </div>
+            <!-- Clip 7 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+07');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 07</div>
+            </div>
+            <!-- Clip 8 -->
+            <div class="video-card">
+                <div class="custom-video-container ratio-9-16">
+                    <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+08');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
+                    <div class="video-controls">
+                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                <div class="video-caption">Clip 08</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER Y MENÚ INFERIOR -->
+    <div class="spacer"></div>
+    <nav id="bottom-menu-bar" aria-label="Main menu">
+        <a href="ani.html" class="menu-bar-item active">
+            <i class="fas fa-film"></i><span>Animation</span>
+        </a>
+        <a href="gd.html" class="menu-bar-item">
+            <i class="fas fa-palette"></i><span>Graphic Design</span>
+        </a>
+        <a href="illust.html" class="menu-bar-item">
+            <i class="fas fa-paintbrush"></i><span>Illustration</span>
+        </a>
+        <a href="3d.html" class="menu-bar-item">
+            <i class="fas fa-cube"></i><span>3D Models</span>
+        </a>
+        <a href="index.html" class="menu-bar-item">
+            <i class="fas fa-star"></i><span>Main</span>
+        </a>
+    </nav>
+
+    <!-- === YOUTUBE IFRAME API SCRIPT === -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- === SCRIPTS === -->
+    <script>
+        /* ==================================================
+           0. CIRCUS LIGHT STRAND DIVIDERS
+        ================================================== */
+        document.querySelectorAll('.act-divider').forEach(divider => {
+            for (let i = 0; i < 16; i++) {
+                const bulb = document.createElement('span');
+                bulb.className = i % 2 === 0 ? 'bulb' : 'bulb even';
+                divider.appendChild(bulb);
+            }
+        });
+
+        /* ==================================================
+           1. SCROLL REVEAL ANIMATIONS
+        ================================================== */
+        const revealElements = document.querySelectorAll('.anim-reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        /* ==================================================
+           2. CUSTOM VIDEO CONTROLS LINKED TO YOUTUBE API
+        ================================================== */
+        let globalYtPlayers = [];
+
+        function onYouTubeIframeAPIReady() {
+            document.querySelectorAll('.custom-video-container').forEach((container, index) => {
+                const placeholder = container.querySelector('.yt-player-placeholder');
+                if (!placeholder) return;
+                
+                const videoId = placeholder.dataset.id;
+                const startTime = parseInt(placeholder.dataset.start) || 0;
+                const playerId = 'yt-player-' + index;
+                placeholder.id = playerId; // Reemplaza el div con un iframe en la API
+                
+                const player = new YT.Player(playerId, {
+                    videoId: videoId,
+                    playerVars: {
+                        'controls': 0, // Oculta todos los controles nativos rojos de YT
+                        'disablekb': 1,
+                        'rel': 0,
+                        'modestbranding': 1,
+                        'start': startTime,
+                        'playsinline': 1
+                    },
+                    events: {
+                        'onReady': (event) => onPlayerReady(event, container, player),
+                        'onStateChange': (event) => onPlayerStateChange(event, container, player)
+                    }
+                });
+                
+                globalYtPlayers.push(player);
+            });
+        }
+
+        function onPlayerReady(event, container, player) {
+            const playBtnBig = container.querySelector('.play-btn');
+            const playPauseBtn = container.querySelector('.play-pause-btn');
+            const muteBtn = container.querySelector('.mute-btn');
+            const fsBtn = container.querySelector('.fs-btn');
+            const progressBar = container.querySelector('.progress-bar');
+            
+            // Botón grande (Overlay)
+            if (playBtnBig) {
+                playBtnBig.addEventListener('click', () => player.playVideo());
+            }
+            
+            // Play/Pause miniatura
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const state = player.getPlayerState();
+                    if (state === YT.PlayerState.PLAYING) {
+                        player.pauseVideo();
+                    } else {
+                        player.playVideo();
+                    }
+                });
+            }
+            
+            // Mute / Unmute
+            if (muteBtn) {
+                muteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (player.isMuted()) {
+                        player.unMute();
+                        muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    } else {
+                        player.mute();
+                        muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    }
+                });
+            }
+            
+            // Barra de progreso interactiva
+            if (progressBar) {
+                progressBar.addEventListener('input', (e) => {
+                    const duration = player.getDuration();
+                    if(duration > 0) {
+                        const seekTo = (e.target.value / 100) * duration;
+                        player.seekTo(seekTo, true);
+                    }
+                });
+                
+                // Actualizar barra automáticamente
+                setInterval(() => {
+                    if (player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING) {
+                        const duration = player.getDuration();
+                        const current = player.getCurrentTime();
+                        if (duration > 0) {
+                            progressBar.value = (current / duration) * 100;
+                        }
+                    }
+                }, 500);
+            }
+            
+            // Botón de pantalla completa interna
+            if(fsBtn) {
+                fsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!document.fullscreenElement) {
+                        container.requestFullscreen().catch(err => console.log(err));
+                    } else {
+                        document.exitFullscreen();
+                    }
+                });
+            }
+        }
+        
+        function onPlayerStateChange(event, container, player) {
+            const playPauseBtn = container.querySelector('.play-pause-btn');
+            
+            if (event.data === YT.PlayerState.PLAYING) {
+                container.classList.add('playing');
+                container.classList.remove('paused');
+                if(playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                
+                // Pausar los demás videos cuando uno se reproduce
+                globalYtPlayers.forEach(otherPlayer => {
+                    if (otherPlayer !== player && otherPlayer.getPlayerState) {
+                        const state = otherPlayer.getPlayerState();
+                        if (state === YT.PlayerState.PLAYING) {
+                            otherPlayer.pauseVideo();
+                        }
+                    }
+                });
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                container.classList.add('paused');
+                container.classList.remove('playing');
+                if(playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+
+        /* ==================================================
+           3. EXTERNAL FULLSCREEN BUTTON (WONDERS)
+        ================================================== */
+        const wondersExtFsBtn = document.getElementById('wonders-ext-fs');
+        const wondersMainVid = document.getElementById('wonders-main-vid');
+        
+        if (wondersExtFsBtn && wondersMainVid) {
+            wondersExtFsBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    wondersMainVid.requestFullscreen().catch(err => console.log(err));
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+        }
+
+        /* ==================================================
+           4. ANTI-COPY SECURITY
+        ================================================== */
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey || e.metaKey) {
+                const forbiddenKeys = ['c', 'u', 's', 'p', 'a', 'x', 'i', 'j'];
+                if (forbiddenKeys.includes(e.key.toLowerCase())) e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
