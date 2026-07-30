@@ -51,7 +51,6 @@
             font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
         }
 
-        /* === CIRCUS JAGGED EDGE === */
         .picos-blancos-top {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 16px;
@@ -61,7 +60,6 @@
             pointer-events: none;
         }
 
-        /* === TOP NAVIGATION === */
         .top-bar {
             position: fixed;
             top: 0;
@@ -144,7 +142,6 @@
 
         .spacer { height: 160px; }
 
-        /* === ANIMATIONS === */
         .anim-reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -155,7 +152,6 @@
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
 
-        /* === ACT DIVIDER === */
         .act-divider {
             display: flex; align-items: center; justify-content: center;
             gap: 14px; width: 90%; max-width: 900px; height: 20px;
@@ -176,14 +172,12 @@
             100% { opacity: 1; transform: scale(1.15); }
         }
 
-        /* === PROJECT SECTION STRUCTURE === */
         .project-section {
             padding-top: 60px;
             position: relative;
             z-index: 1;
         }
 
-        /* GIF BACKGROUNDS FOR PROJECTS */
         #wonders::before, #sinistars::before, #ink::before {
             content: '';
             position: absolute;
@@ -221,7 +215,6 @@
             text-transform: uppercase;
         }
 
-        /* === WONDERS HERO LAYOUT === */
         .wonders-hero-layout {
             display: flex;
             align-items: center;
@@ -275,7 +268,6 @@
             font-weight: normal;
         }
 
-        /* === CUSTOM VIDEO PLAYER INTERFACE === */
         .custom-video-container {
             position: relative;
             background: #000;
@@ -300,7 +292,6 @@
         .hero-video { width: 90%; margin: 0 auto 70px auto; }
         .hero-video.ratio-16-9 { max-width: 1200px; }
 
-        /* Estilo aplicado ahora para los iframes de YT */
         .custom-video-container iframe {
             width: 100%; height: 100%;
             object-fit: contain;
@@ -309,111 +300,6 @@
             border: none;
         }
 
-        /* Overlay & Big Play Button */
-        .video-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            transition: opacity 0.4s ease;
-        }
-        .video-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-
-        .play-btn {
-            position: relative;
-            z-index: 3;
-            background: rgba(17, 17, 17, 0.7);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 2px solid var(--yellow);
-            color: var(--yellow);
-            font-size: 2.2rem;
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; align-items: center; justify-content: center;
-            padding-left: 6px;
-        }
-        .play-btn:hover {
-            transform: scale(1.15);
-            background: var(--yellow);
-            color: var(--black);
-            box-shadow: 0 0 25px rgba(255, 179, 0, 0.6);
-        }
-
-        .custom-video-container.playing .video-overlay {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* === INTERNAL CUSTOM CONTROLS === */
-        .video-controls {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 40px 15px 15px 15px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-        }
-        .custom-video-container:hover .video-controls,
-        .custom-video-container.paused .video-controls {
-            opacity: 1;
-        }
-        .custom-video-container .video-controls {
-            pointer-events: none;
-        }
-        .custom-video-container.playing .video-controls,
-        .custom-video-container.paused .video-controls {
-            pointer-events: auto;
-        }
-
-        .control-btn {
-            background: none; border: none;
-            color: var(--white);
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .control-btn:hover { color: var(--yellow); transform: scale(1.1); }
-
-        .progress-bar {
-            flex: 1;
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255, 255, 255, 0.3);
-            height: 4px;
-            border-radius: 2px;
-            outline: none;
-            cursor: pointer;
-            transition: height 0.2s;
-        }
-        .progress-bar:hover { height: 6px; }
-        .progress-bar::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none;
-            width: 14px; height: 14px;
-            border-radius: 50%;
-            background: var(--yellow);
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 179, 0, 0.8);
-        }
-
-        /* === VIDEO GRID === */
         .grid-header { text-align: center; margin-bottom: 50px; }
         .grid-header h3 {
             color: var(--white); font-weight: normal; text-transform: uppercase;
@@ -436,7 +322,6 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* Footer */
         .footer {
             text-align: center; padding: 70px 20px 40px 20px;
             color: var(--text-gray); font-size: 0.8rem;
@@ -447,7 +332,6 @@
         .footer-social a { color: var(--text-gray); font-size: 1.1rem; transition: color 0.3s, transform 0.3s; }
         .footer-social a:hover { color: var(--yellow); transform: translateY(-3px); }
 
-        /* === BOTTOM MENU BAR === */
         #bottom-menu-bar {
             position: fixed; left: 0; bottom: 0;
             width: 100%; height: var(--menu-bar-h); z-index: 200;
@@ -514,12 +398,10 @@
 
     <div class="spacer"></div>
 
-    <!-- ================= PROJECT 1: UNDER THE WONDERS OF TOMORROW ================= -->
     <section id="wonders" class="project-section">
         <h1 class="project-title anim-reveal">Under the Wonders of Tomorrow</h1>
         <p class="project-subtitle anim-reveal delay-1">Latest animation</p>
 
-        <!-- LAYOUT HERO -->
         <div class="wonders-hero-layout anim-reveal delay-2">
             <div class="hero-side-btn">
                 <button class="ext-fs-btn" id="wonders-ext-fs" aria-label="Pantalla Completa">
@@ -530,15 +412,6 @@
             <div class="hero-center-video">
                 <div class="custom-video-container ratio-9-16" id="wonders-main-vid">
                     <div class="yt-player-placeholder" data-id="c9EYbh_9hNs" data-start="59"></div>
-                    <div class="video-overlay" style="background: transparent;">
-                        <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
-                    </div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
             </div>
             
@@ -555,7 +428,7 @@
                     <strong>Production Crew</strong>
                         <br>
                     <strong>3D and 2D Animation and Modeling:</strong> Aztroshaper
-    <br>
+                    <br>
                     <strong>Puppet Creation:</strong> Aztroshaper and Ariel Contreras
                     <br><br>
                     <strong> Software Used</strong> <br>
@@ -574,73 +447,33 @@
         </div>
         
         <div class="video-grid grid-9-16 anim-reveal">
-            <!-- Alma -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
-                    <div class="yt-player-placeholder" data-id="c9EYbh_9hNs" data-start="21"></div>
-                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
+                    <div class="yt-player-placeholder" data-id="a-2Stky8JtQ" data-start="0"></div>
                 </div>
                 <div class="video-caption">Alma</div>
             </div>
-            <!-- Arte -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="h3Pu6VU8ZdU" data-start="58"></div>
-                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Arte</div>
             </div>
-            <!-- Bestias -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="zzeDLyvwwqo" data-start="38"></div>
-                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Bestias</div>
             </div>
-            <!-- Creación -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="gcLzvvvFtTA" data-start="32"></div>
-                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Creación</div>
             </div>
-            <!-- Cosecha -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="wisOIiDe_CE" data-start="25"></div>
-                    <div class="video-overlay" style="background: transparent;"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button>
-                        <input type="range" class="progress-bar" value="0" min="0" max="100">
-                        <button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button>
-                        <button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Cosecha</div>
             </div>
@@ -649,107 +482,61 @@
 
     <div class="act-divider"></div>
 
-    <!-- ================= PROJECT 2: SINISTARS ================= -->
     <section id="sinistars" class="project-section">
         <h1 class="project-title anim-reveal">Sinistars</h1>
         <p class="project-subtitle anim-reveal delay-1">Animated Short</p>
 
-        <!-- Video Principal 16:9 -->
         <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
             <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-            <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/111111/FFB300?text=Sinistars');">
-                <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
-            </div>
-            <div class="video-controls">
-                <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-                <input type="range" class="progress-bar" value="0" min="0" max="100">
-                <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
-                <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
-            </div>
         </div>
 
         <div class="grid-header anim-reveal">
             <h3><span>More</span> From This Project</h3>
         </div>
         
-        <!-- 5 CLIPS EN 9:16 -->
         <div class="video-grid grid-9-16 anim-reveal">
-            <!-- 1 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 01</div>
             </div>
-            <!-- 2 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 02</div>
             </div>
-            <!-- 3 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+03');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 03</div>
             </div>
-            <!-- 4 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+04');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 04</div>
             </div>
-            <!-- 5 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+05');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 05</div>
             </div>
         </div>
 
-        <!-- 2 CLIPS EN 16:9 ABAJO -->
         <div class="video-grid grid-16-9 anim-reveal" style="margin-top: 50px;">
             <div class="video-card">
                 <div class="custom-video-container ratio-16-9">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/1a1a1a/FFB300?text=Wide+Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Wide Clip 01</div>
             </div>
             <div class="video-card">
                 <div class="custom-video-container ratio-16-9">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/1a1a1a/FFB300?text=Wide+Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Wide Clip 02</div>
             </div>
@@ -758,131 +545,76 @@
 
     <div class="act-divider"></div>
 
-    <!-- ================= PROJECT 3: INVISIBLE INK ================= -->
     <section id="ink" class="project-section">
         <h1 class="project-title anim-reveal">Invisible Ink</h1>
         <p class="project-subtitle anim-reveal delay-1">Animated Project</p>
 
-        <!-- Video Principal únicamente -->
         <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
             <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-            <div class="video-overlay" style="background-image: url('https://via.placeholder.com/1280x720/111111/FFB300?text=Invisible+Ink');">
-                <button class="play-btn" aria-label="Play Video"><i class="fas fa-play"></i></button>
-            </div>
-            <div class="video-controls">
-                <button class="control-btn play-pause-btn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
-                <input type="range" class="progress-bar" value="0" min="0" max="100">
-                <button class="control-btn mute-btn" aria-label="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
-                <button class="control-btn fs-btn" aria-label="Fullscreen"><i class="fas fa-expand"></i></button>
-            </div>
         </div>
     </section>
 
     <div class="act-divider"></div>
 
-    <!-- ================= PROJECT 4: CHILLIN' N FRIENDS ================= -->
     <section id="chillin" class="project-section">
         <h1 class="project-title anim-reveal">Chillin' n Friends</h1>
         <p class="project-subtitle anim-reveal delay-1">Short Clips</p>
 
-        <!-- Primer bloque: 4 CLIPS EN 9:16 -->
         <div class="video-grid grid-9-16 anim-reveal delay-2">
-            <!-- Clip 1 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+01');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 01</div>
             </div>
-            <!-- Clip 2 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+02');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 02</div>
             </div>
-            <!-- Clip 3 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+03');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 03</div>
             </div>
-            <!-- Clip 4 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+04');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 04</div>
             </div>
         </div>
 
-        <!-- Segundo bloque: Otros 4 CLIPS EN 9:16 ABAJO -->
         <div class="video-grid grid-9-16 anim-reveal" style="margin-top: 30px;">
-            <!-- Clip 5 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+05');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 05</div>
             </div>
-            <!-- Clip 6 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+06');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 06</div>
             </div>
-            <!-- Clip 7 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+07');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 07</div>
             </div>
-            <!-- Clip 8 -->
             <div class="video-card">
                 <div class="custom-video-container ratio-9-16">
                     <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
-                    <div class="video-overlay" style="background-image: url('https://via.placeholder.com/720x1280/1a1a1a/FFB300?text=Clip+08');"><button class="play-btn"><i class="fas fa-play"></i></button></div>
-                    <div class="video-controls">
-                        <button class="control-btn play-pause-btn"><i class="fas fa-play"></i></button><input type="range" class="progress-bar" value="0" min="0" max="100"><button class="control-btn mute-btn"><i class="fas fa-volume-up"></i></button><button class="control-btn fs-btn"><i class="fas fa-expand"></i></button>
-                    </div>
                 </div>
                 <div class="video-caption">Clip 08</div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER Y MENÚ INFERIOR -->
     <div class="spacer"></div>
     <nav id="bottom-menu-bar" aria-label="Main menu">
         <a href="ani.html" class="menu-bar-item active">
@@ -902,14 +634,9 @@
         </a>
     </nav>
 
-    <!-- === YOUTUBE IFRAME API SCRIPT === -->
     <script src="https://www.youtube.com/iframe_api"></script>
 
-    <!-- === SCRIPTS === -->
     <script>
-        /* ==================================================
-           0. CIRCUS LIGHT STRAND DIVIDERS
-        ================================================== */
         document.querySelectorAll('.act-divider').forEach(divider => {
             for (let i = 0; i < 16; i++) {
                 const bulb = document.createElement('span');
@@ -918,9 +645,6 @@
             }
         });
 
-        /* ==================================================
-           1. SCROLL REVEAL ANIMATIONS
-        ================================================== */
         const revealElements = document.querySelectorAll('.anim-reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -931,9 +655,6 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        /* ==================================================
-           2. CUSTOM VIDEO CONTROLS LINKED TO YOUTUBE API
-        ================================================== */
         let globalYtPlayers = [];
 
         function onYouTubeIframeAPIReady() {
@@ -944,21 +665,17 @@
                 const videoId = placeholder.dataset.id;
                 const startTime = parseInt(placeholder.dataset.start) || 0;
                 const playerId = 'yt-player-' + index;
-                placeholder.id = playerId; // Reemplaza el div con un iframe en la API
+                placeholder.id = playerId;
                 
                 const player = new YT.Player(playerId, {
                     videoId: videoId,
                     playerVars: {
-                        'controls': 0, // Oculta todos los controles nativos rojos de YT
+                        'controls': 1,
                         'disablekb': 1,
                         'rel': 0,
                         'modestbranding': 1,
                         'start': startTime,
                         'playsinline': 1
-                    },
-                    events: {
-                        'onReady': (event) => onPlayerReady(event, container, player),
-                        'onStateChange': (event) => onPlayerStateChange(event, container, player)
                     }
                 });
                 
@@ -966,107 +683,6 @@
             });
         }
 
-        function onPlayerReady(event, container, player) {
-            const playBtnBig = container.querySelector('.play-btn');
-            const playPauseBtn = container.querySelector('.play-pause-btn');
-            const muteBtn = container.querySelector('.mute-btn');
-            const fsBtn = container.querySelector('.fs-btn');
-            const progressBar = container.querySelector('.progress-bar');
-            
-            // Botón grande (Overlay)
-            if (playBtnBig) {
-                playBtnBig.addEventListener('click', () => player.playVideo());
-            }
-            
-            // Play/Pause miniatura
-            if (playPauseBtn) {
-                playPauseBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const state = player.getPlayerState();
-                    if (state === YT.PlayerState.PLAYING) {
-                        player.pauseVideo();
-                    } else {
-                        player.playVideo();
-                    }
-                });
-            }
-            
-            // Mute / Unmute
-            if (muteBtn) {
-                muteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (player.isMuted()) {
-                        player.unMute();
-                        muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    } else {
-                        player.mute();
-                        muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    }
-                });
-            }
-            
-            // Barra de progreso interactiva
-            if (progressBar) {
-                progressBar.addEventListener('input', (e) => {
-                    const duration = player.getDuration();
-                    if(duration > 0) {
-                        const seekTo = (e.target.value / 100) * duration;
-                        player.seekTo(seekTo, true);
-                    }
-                });
-                
-                // Actualizar barra automáticamente
-                setInterval(() => {
-                    if (player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                        const duration = player.getDuration();
-                        const current = player.getCurrentTime();
-                        if (duration > 0) {
-                            progressBar.value = (current / duration) * 100;
-                        }
-                    }
-                }, 500);
-            }
-            
-            // Botón de pantalla completa interna
-            if(fsBtn) {
-                fsBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (!document.fullscreenElement) {
-                        container.requestFullscreen().catch(err => console.log(err));
-                    } else {
-                        document.exitFullscreen();
-                    }
-                });
-            }
-        }
-        
-        function onPlayerStateChange(event, container, player) {
-            const playPauseBtn = container.querySelector('.play-pause-btn');
-            
-            if (event.data === YT.PlayerState.PLAYING) {
-                container.classList.add('playing');
-                container.classList.remove('paused');
-                if(playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                
-                // Pausar los demás videos cuando uno se reproduce
-                globalYtPlayers.forEach(otherPlayer => {
-                    if (otherPlayer !== player && otherPlayer.getPlayerState) {
-                        const state = otherPlayer.getPlayerState();
-                        if (state === YT.PlayerState.PLAYING) {
-                            otherPlayer.pauseVideo();
-                        }
-                    }
-                });
-            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-                container.classList.add('paused');
-                container.classList.remove('playing');
-                if(playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        }
-
-        /* ==================================================
-           3. EXTERNAL FULLSCREEN BUTTON (WONDERS)
-        ================================================== */
         const wondersExtFsBtn = document.getElementById('wonders-ext-fs');
         const wondersMainVid = document.getElementById('wonders-main-vid');
         
@@ -1080,9 +696,6 @@
             });
         }
 
-        /* ==================================================
-           4. ANTI-COPY SECURITY
-        ================================================== */
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12') e.preventDefault();
