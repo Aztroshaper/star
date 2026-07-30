@@ -276,9 +276,7 @@
             transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s;
             overflow: hidden;
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block; /* Modificado para posicionar iframe */
         }
 
         .custom-video-container:hover {
@@ -293,7 +291,11 @@
         .hero-video.ratio-16-9 { max-width: 1200px; }
 
         .custom-video-container iframe {
-            width: 100%; height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%;
             object-fit: contain;
             background: #000;
             display: block;
@@ -486,8 +488,9 @@
         <h1 class="project-title anim-reveal">Sinistars</h1>
         <p class="project-subtitle anim-reveal delay-1">Animated Short</p>
 
+        <!-- Nuevo ID Principal de Sinistars -->
         <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
-            <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+            <div class="yt-player-placeholder" data-id="mBWK_kRFbUU" data-start="0"></div>
         </div>
 
         <div class="grid-header anim-reveal">
@@ -549,8 +552,9 @@
         <h1 class="project-title anim-reveal">Invisible Ink</h1>
         <p class="project-subtitle anim-reveal delay-1">Animated Project</p>
 
+        <!-- Nuevo ID Principal de Invisible Ink -->
         <div class="custom-video-container hero-video ratio-16-9 anim-reveal delay-2">
-            <div class="yt-player-placeholder" data-id="ID_DEL_VIDEO_AQUI" data-start="0"></div>
+            <div class="yt-player-placeholder" data-id="MSlXMiZzrlg" data-start="0"></div>
         </div>
     </section>
 
@@ -634,8 +638,6 @@
         </a>
     </nav>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
         document.querySelectorAll('.act-divider').forEach(divider => {
             for (let i = 0; i < 16; i++) {
@@ -655,6 +657,12 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
+        // CARGA DINÁMICA DE LA API DE YOUTUBE (Evita errores en servidores en vivo)
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
         let globalYtPlayers = [];
 
         function onYouTubeIframeAPIReady() {
@@ -663,6 +671,10 @@
                 if (!placeholder) return;
                 
                 const videoId = placeholder.dataset.id;
+                
+                // Si el ID es el temporal, ignorarlo para no romper la carga de la página
+                if (!videoId || videoId === 'ID_DEL_VIDEO_AQUI') return;
+
                 const startTime = parseInt(placeholder.dataset.start) || 0;
                 const playerId = 'yt-player-' + index;
                 placeholder.id = playerId;
@@ -675,7 +687,8 @@
                         'rel': 0,
                         'modestbranding': 1,
                         'start': startTime,
-                        'playsinline': 1
+                        'playsinline': 1,
+                        'origin': window.location.origin
                     }
                 });
                 
