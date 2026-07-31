@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illustration Gallery</title>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFB300'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'Aztro';
+            src: url('aztro.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --black: #000000;
+            --yellow: #FFB300;
+            --white: #f5f5f5;
+            --charcoal: #111111;
+            --text-gray: #999999;
+            --menu-bar-h: 78px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--black);
+            background-image: radial-gradient(circle at 50% 0%, #151107 0%, #030303 70%);
+            color: var(--white);
+            font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+            padding-bottom: var(--menu-bar-h);
+        }
+
+        img {
+            -webkit-user-drag: none;
+            display: block;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        h1, h2, h3, .nav-links {
+            font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+
+        .picos-blancos-top {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 16px;
+            background-color: var(--white);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 95% 15%, 90% 100%, 85% 15%, 80% 100%, 75% 15%, 70% 100%, 65% 15%, 60% 100%, 55% 15%, 50% 100%, 45% 15%, 40% 100%, 35% 15%, 30% 100%, 25% 15%, 20% 100%, 15% 15%, 10% 100%, 5% 15%, 0% 100%);
+            z-index: 500;
+            pointer-events: none;
+        }
+
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px 5%;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 179, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-back {
+            color: var(--yellow);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .btn-back i { font-size: 0.75rem; }
+
+        .btn-back:hover {
+            color: var(--white);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .brand-mark {
+            color: var(--white);
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+
+        .sub-menu {
+            position: fixed;
+            top: 65px;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(3,3,3,0.95), rgba(3,3,3,0));
+            padding: 20px 5% 40px 5%;
+            z-index: 99;
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .sub-menu a {
+            pointer-events: auto;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .sub-menu a:hover { color: var(--yellow); }
+
+        .sub-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background-color: var(--yellow);
+            transition: width 0.4s ease;
+        }
+
+        .sub-menu a:hover::after { width: 100%; }
+
+        .spacer { height: 160px; }
+
+    
+        .anim-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .anim-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+
+        .act-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 90%;
+            max-width: 900px;
+            height: 20px;
+            margin: 0 auto 70px auto;
+            overflow: hidden;
+        }
+
+        .act-divider .bulb {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: var(--yellow);
+            box-shadow: 0 0 8px var(--yellow), 0 0 14px var(--yellow);
+            animation: bulb-blink 0.8s infinite alternate;
+            flex-shrink: 0;
+        }
+
+        .act-divider .bulb.even {
+            background: #fff;
+            box-shadow: 0 0 8px #fff, 0 0 14px #fff;
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bulb-blink {
+            0% { opacity: 0.25; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
+        
+        .project-section {
+            padding-top: 60px;
+            position: relative;
+        }
+
+        .project-title {
+            text-align: center;
+            color: var(--white);
+            font-size: 4.5rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 179, 0, 0.15);
+        }
+
+        .project-subtitle {
+            text-align: center;
+            color: var(--yellow);
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
+
+        /* 1. Main Hero Image */
+        .hero-image {
+            width: 90%;
+            max-width: 1400px;
+            height: 75vh;
+            margin: 0 auto 70px auto;
+            cursor: pointer;
+            border: 2px solid #000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s, border-color 0.4s, box-shadow 0.4s;
+            filter: brightness(0.88);
+        }
+
+        .hero-image:hover {
+            transform: scale(1.015);
+            filter: brightness(1.05);
+            border-color: var(--yellow);
+            box-shadow: 0 20px 50px rgba(255, 179, 0, 0.25);
+        }
+
+        /* 2. Text Columns */
+        .text-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            width: 85%;
+            max-width: 1100px;
+            margin: 0 auto 80px auto;
+        }
+
+        .text-columns h3 {
+            color: var(--yellow);
+            margin-bottom: 20px;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .text-columns p {
+            font-size: 1rem;
+            color: var(--text-gray);
+            font-weight: normal;
+            text-align: justify;
+        }
+
+        /* 3. Advanced Slider */
+        .slider-section {
+            width: 100%;
+            position: relative;
+            margin-bottom: 80px;
+            overflow: hidden;
+            padding: 0 5%;
+        }
+
+        .slider-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+        }
+
+        .slider-slide {
+            min-width: 70%;
+            height: 65vh;
+            cursor: pointer;
+            position: relative;
+            opacity: 0.6;
+            border: 2px solid #000;
+            transition: opacity 0.6s, border-color 0.4s, box-shadow 0.4s;
+        }
+
+        .slider-slide.active-slide { opacity: 1; }
+
+        .slider-slide:hover {
+            border-color: var(--yellow);
+            box-shadow: 0 10px 30px rgba(255, 179, 0, 0.2);
+        }
+
+        .slider-slide img { height: 100%; }
+
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: 3px solid var(--yellow);
+            color: var(--yellow);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .slider-arrow:hover {
+            background: var(--yellow);
+            color: var(--black);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .arrow-left { left: 8%; }
+        .arrow-right { right: 8%; }
+
+        /* 4. Image Grid */
+        .grid-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .grid-header h3 {
+            color: var(--white);
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-size: 1.2rem;
+        }
+
+        .grid-header h3 span { color: var(--yellow); }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .image-grid img {
+            height: 450px;
+            cursor: pointer;
+            border: 2px solid #000;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.85;
+        }
+
+        .image-grid img:hover {
+            opacity: 1;
+            transform: translateY(-10px);
+            border-color: var(--yellow);
+            box-shadow: 0 15px 30px rgba(255, 179, 0, 0.25);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 70px 20px 40px 20px;
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .footer span {
+            color: var(--yellow);
+            font-weight: normal;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 26px;
+            margin-bottom: 26px;
+        }
+
+        .footer-social a {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: var(--yellow);
+            transform: translateY(-3px);
+        }
+
+        /* === LIGHTBOX === */
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(3, 3, 3, 0.98);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #000;
+            border: 3px solid var(--yellow);
+            color: var(--yellow);
+            font-size: 32px;
+            font-weight: normal;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: 0 0 15px rgba(255, 179, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--yellow);
+            color: #000;
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 0 30px rgba(255, 179, 0, 0.8);
+        }
+
+        .lightbox-main-view {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 30px 30px 30px;
+            overflow: hidden;
+        }
+
+        .lightbox-main-view img {
+            max-width: 95vw;
+            max-height: 75vh;
+            object-fit: contain;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+            animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .lightbox-thumbnails {
+            height: 130px;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            justify-content: flex-start;
+            border-top: 1px solid rgba(255, 179, 0, 0.2);
+            align-items: center;
+        }
+
+        .lightbox-thumbnails::-webkit-scrollbar { height: 4px; }
+        .lightbox-thumbnails::-webkit-scrollbar-track { background: transparent; }
+        .lightbox-thumbnails::-webkit-scrollbar-thumb { background: var(--yellow); border-radius: 2px; }
+
+        .lightbox-thumbnails img {
+            height: 100%;
+            width: 140px;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.4s ease;
+            filter: grayscale(80%);
+        }
+
+        .lightbox-thumbnails img:hover {
+            opacity: 0.8;
+            filter: grayscale(0%);
+        }
+
+        .lightbox-thumbnails img.active-thumb {
+            opacity: 1;
+            filter: grayscale(0%);
+            box-shadow: 0 0 0 2px var(--yellow);
+        }
+
+        /* === BOTTOM MENU BAR === */
+        #bottom-menu-bar {
+            position: fixed;
+            left: 0; bottom: 0;
+            width: 100%; height: var(--menu-bar-h);
+            z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            gap: clamp(16px, 4vw, 58px);
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 35%, #000 100%);
+            border-top: 2px solid var(--yellow);
+            box-shadow: 0 -12px 30px rgba(0,0,0,0.55), 0 -1px 18px rgba(255,179,0,0.2);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 6px 20px calc(env(safe-area-inset-bottom, 0px)) 20px;
+            box-sizing: border-box;
+        }
+
+        .menu-bar-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; background: none; border: none; cursor: pointer; text-decoration: none;
+            color: var(--white); font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 11px; white-space: nowrap;
+            transition: color 0.25s ease, transform 0.25s ease;
+            padding: 8px 4px;
+        }
+
+        .menu-bar-item i {
+            font-size: 19px; display: block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease, text-shadow 0.25s ease;
+        }
+
+        .menu-bar-item:hover, .menu-bar-item.active { color: var(--yellow); }
+        .menu-bar-item:hover i, .menu-bar-item.active i { text-shadow: 0 0 14px rgba(255,179,0,0.9); }
+        .menu-bar-item:hover { transform: translateY(-4px); }
+        .menu-bar-item:hover i { transform: scale(1.18); }
+        .menu-bar-item:active { transform: translateY(-1px) scale(0.95); }
+        .menu-bar-item:focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; border-radius: 6px; }
+
+        /* Print Security */
+        @media print { body { display: none !important; } }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .text-columns { grid-template-columns: 1fr; gap: 40px; }
+            .project-title { font-size: 3rem; letter-spacing: 10px; }
+            .slider-slide { min-width: 90%; }
+            .arrow-left { left: 2%; }
+            .arrow-right { right: 2%; }
+            .sub-menu { gap: 20px; flex-wrap: wrap; }
+        }
+
+        @media (max-width: 768px) {
+            :root { --menu-bar-h: 62px; }
+            .picos-blancos-top { height: 10px; }
+            .close-btn { width: 46px; height: 46px; font-size: 24px; top: 20px; right: 20px; }
+            .menu-bar-item { font-size: 8px; gap: 3px; padding: 6px 3px; }
+            .menu-bar-item i { font-size: 16px; }
+            .brand-mark { display: none; }
+        }
+
+        @media (max-width: 400px) {
+            .menu-bar-item span { display: none; }
+            .menu-bar-item i { font-size: 20px; }
+            #bottom-menu-bar { gap: clamp(10px, 7vw, 26px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="picos-blancos-top"></div>
+
+
+    <header class="top-bar">
+        <a href="index.html" class="btn-back"><i class="fas fa-chevron-left"></i> Back to Portfolio</a>
+        <span class="brand-mark">Aztroshaper™</span>
+    </header>
+
+
+    <nav class="sub-menu">
+        <a href="#sinistars">Sinistars</a>
+        <a href="#fanarts">Fanarts</a>
+        <a href="#oc">Original Characters</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+  
+    <section id="sinistars" class="project-section">
+        <h1 class="project-title anim-reveal">Sinistars</h1>
+        <p class="project-subtitle anim-reveal delay-1">Illustration & Concept Art</p>
+
+        <img src="guardiand.png" alt="Sinistars Main Art" class="hero-image anim-reveal delay-2 gallery-item" data-gallery="sinistars">
+
+        <div class="text-columns anim-reveal">
+            <div>
+                <h3>VISUAL DEVELOPMENT</h3>
+                <p>The development of the Sinistars series explores dark themes and dense atmospheres. The color palette focuses on deep blacks contrasted with flashes of warm lighting. Every stroke is designed to evoke mystery and raw power.</p>
+            </div>
+            <div>
+                <h3>CONCEPT</h3>
+                <p>Inspired by cyberpunk aesthetics and dark fantasy, the characters are designed with a high level of detail in their armor and expressions. The compositions consistently seek asymmetry to generate visual tension for the viewer.</p>
+            </div>
+        </div>
+
+        <div class="slider-section anim-reveal" data-slider="1">
+            <button class="slider-arrow arrow-left">❮</button>
+            <button class="slider-arrow arrow-right">❯</button>
+            <div class="slider-track">
+                <div class="slider-slide active-slide">
+                    <img src="https://via.placeholder.com/1000x600/1a1a1a/ffffff?text=Sinistars+Slide+1" class="gallery-item" data-gallery="sinistars">
+                </div>
+                <div class="slider-slide">
+                    <img src="https://via.placeholder.com/1000x600/222222/ffffff?text=Sinistars+Slide+2" class="gallery-item" data-gallery="sinistars">
+                </div>
+                <div class="slider-slide">
+                    <img src="https://via.placeholder.com/1000x600/0a0a0a/ffffff?text=Sinistars+Slide+3" class="gallery-item" data-gallery="sinistars">
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-header anim-reveal">
+            <h3><span>Character</span> Exploration</h3>
+        </div>
+        <div class="image-grid anim-reveal">
+            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=Character+1" class="gallery-item" data-gallery="sinistars">
+            <img src="https://via.placeholder.com/500x700/1a1a1a/FFB300?text=Character+2" class="gallery-item" data-gallery="sinistars">
+            <img src="https://via.placeholder.com/500x700/050505/FFB300?text=Character+3" class="gallery-item" data-gallery="sinistars">
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+    <!-- ================= PROJECT 2: FANARTS ================= -->
+    <section id="fanarts" class="project-section">
+        <h1 class="project-title anim-reveal">Fanarts</h1>
+        <p class="project-subtitle anim-reveal delay-1">Tributes & Redesigns</p>
+
+        <img src="https://via.placeholder.com/1400x800/1a1a1a/FFB300?text=Fanarts+Main+Art" alt="Fanarts Main" class="hero-image anim-reveal delay-2 gallery-item" data-gallery="fanarts">
+
+        <div class="text-columns anim-reveal">
+            <div>
+                <h3>STYLIZATION</h3>
+                <p>Reinterpreting iconic characters from pop culture, anime, and video games through a unique stylistic lens. The goal is to maintain the essence of the original designs while applying modern rendering techniques and experimental color palettes.</p>
+            </div>
+            <div>
+                <h3>APPROACH</h3>
+                <p>Each piece is an exercise in dynamic anatomy and lighting studies, seeking to capture epic moments or emotional atmospheres that connect deeply with the respective fan communities worldwide.</p>
+            </div>
+        </div>
+
+        <div class="slider-section anim-reveal" data-slider="2">
+            <button class="slider-arrow arrow-left">❮</button>
+            <button class="slider-arrow arrow-right">❯</button>
+            <div class="slider-track">
+                <div class="slider-slide active-slide">
+                    <img src="https://via.placeholder.com/1000x600/222222/ffffff?text=Fanart+Slide+1" class="gallery-item" data-gallery="fanarts">
+                </div>
+                <div class="slider-slide">
+                    <img src="https://via.placeholder.com/1000x600/111111/ffffff?text=Fanart+Slide+2" class="gallery-item" data-gallery="fanarts">
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-header anim-reveal">
+            <h3><span>Extended</span> Gallery</h3>
+        </div>
+        <div class="image-grid anim-reveal">
+            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=Fanart+Grid+1" class="gallery-item" data-gallery="fanarts">
+            <img src="https://via.placeholder.com/500x700/1a1a1a/FFB300?text=Fanart+Grid+2" class="gallery-item" data-gallery="fanarts">
+            <img src="https://via.placeholder.com/500x700/0a0a0a/FFB300?text=Fanart+Grid+3" class="gallery-item" data-gallery="fanarts">
+            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=Fanart+Grid+4" class="gallery-item" data-gallery="fanarts">
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+    <!-- ================= PROJECT 3: OC ================= -->
+    <section id="oc" class="project-section">
+        <h1 class="project-title anim-reveal">OC</h1>
+        <p class="project-subtitle anim-reveal delay-1">Original Characters</p>
+
+        <img src="https://via.placeholder.com/1400x800/111111/FFB300?text=OC+Main+Art" alt="OC Main" class="hero-image anim-reveal delay-2 gallery-item" data-gallery="oc">
+
+        <div class="text-columns anim-reveal">
+            <div>
+                <h3>WORLD BUILDING</h3>
+                <p>Creation of visual universes from scratch. Each original character (OC) comes with a background story that dictates their costume design, body language, and personal color palette. It is the purest expression of conceptual design.</p>
+            </div>
+            <div>
+                <h3>NARRATIVE</h3>
+                <p>The illustrations do not just show the character, but tell a story about their world. Environmental elements, props, and visual effects combine to bring 100% original creations to life with immersive depth.</p>
+            </div>
+        </div>
+
+        <div class="slider-section anim-reveal" data-slider="3">
+            <button class="slider-arrow arrow-left">❮</button>
+            <button class="slider-arrow arrow-right">❯</button>
+            <div class="slider-track">
+                <div class="slider-slide active-slide">
+                    <img src="https://via.placeholder.com/1000x600/1a1a1a/ffffff?text=OC+Slide+1" class="gallery-item" data-gallery="oc">
+                </div>
+                <div class="slider-slide">
+                    <img src="https://via.placeholder.com/1000x600/0a0a0a/ffffff?text=OC+Slide+2" class="gallery-item" data-gallery="oc">
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-header anim-reveal">
+            <h3><span>Sketches</span> & Renders</h3>
+        </div>
+        <div class="image-grid anim-reveal">
+            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=OC+Grid+1" class="gallery-item" data-gallery="oc">
+            <img src="https://via.placeholder.com/500x700/222222/FFB300?text=OC+Grid+2" class="gallery-item" data-gallery="oc">
+        </div>
+    </section>
+
+    <div class="act-divider"></div>
+
+        <footer class="footer anim-reveal">
+        <div class="footer-social">
+            <a href="https://instagram.com/aztroshaper" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://tiktok.com/@aztroshaper" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.youtube.com/@Aztroshaper" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.artstation.com/aztroshaper" target="_blank" rel="noopener"><i class="fab fa-artstation"></i></a>
+        </div>
+        &copy; 2026 <span>Aztroshaper™</span>. All rights reserved.<br>
+        <small style="text-transform: none; color: #666; display:block; margin-top: 15px;">Total or partial reproduction of the works shown on this page is strictly prohibited.</small>
+    </footer>
+
+    <div id="lightbox">
+        <button class="close-btn" id="close-lightbox"><i class="fas fa-times"></i></button>
+        <div class="lightbox-main-view">
+            <img id="lightbox-main-img" src="" alt="Expanded View">
+        </div>
+        <div class="lightbox-thumbnails" id="lightbox-thumbnails-container">
+
+        </div>
+    </div>
+
+    <nav id="bottom-menu-bar" aria-label="Main menu">
+        <a href="ani.html" class="menu-bar-item">
+            <i class="fas fa-film"></i><span>Animation</span>
+        </a>
+        <a href="gd.html" class="menu-bar-item">
+            <i class="fas fa-palette"></i><span>Graphic Design</span>
+        </a>
+        <a href="illust.html" class="menu-bar-item active">
+            <i class="fas fa-paintbrush"></i><span>Illustration</span>
+        </a>
+        <a href="3d.html" class="menu-bar-item">
+            <i class="fas fa-cube"></i><span>3D Models</span>
+        </a>
+        <a href="index.html" class="menu-bar-item">
+            <i class="fas fa-star"></i><span>Main</span>
+        </a>
+    </nav>
+
+    <script>
+
+        document.querySelectorAll('.act-divider').forEach(divider => {
+            for (let i = 0; i < 16; i++) {
+                const bulb = document.createElement('span');
+                bulb.className = i % 2 === 0 ? 'bulb' : 'bulb even';
+                divider.appendChild(bulb);
+            }
+        });
+
+  
+        const revealElements = document.querySelectorAll('.anim-reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        /* ==================================================
+           2. ADVANCED ANIMATED SLIDERS (AUTOPLAY + ARROWS)
+        ================================================== */
+        const sliders = document.querySelectorAll('.slider-section');
+
+        sliders.forEach(slider => {
+            const track = slider.querySelector('.slider-track');
+            const slides = slider.querySelectorAll('.slider-slide');
+            const prevBtn = slider.querySelector('.arrow-left');
+            const nextBtn = slider.querySelector('.arrow-right');
+
+            let currentIndex = 0;
+            const slideCount = slides.length;
+            let autoPlayInterval;
+
+            function updateSlider() {
+                const slideWidth = slides[0].clientWidth;
+                const gap = 20;
+                const offset = currentIndex * (slideWidth + gap);
+
+                track.style.transform = `translateX(-${offset}px)`;
+
+                slides.forEach((s, index) => {
+                    if(index === currentIndex) s.classList.add('active-slide');
+                    else s.classList.remove('active-slide');
+                });
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex === slideCount - 1) ? 0 : currentIndex + 1;
+                updateSlider();
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex === 0) ? slideCount - 1 : currentIndex - 1;
+                updateSlider();
+            }
+
+            nextBtn.addEventListener('click', () => { nextSlide(); resetAutoplay(); });
+            prevBtn.addEventListener('click', () => { prevSlide(); resetAutoplay(); });
+
+            function startAutoplay() {
+                autoPlayInterval = setInterval(nextSlide, 4000);
+            }
+
+            function resetAutoplay() {
+                clearInterval(autoPlayInterval);
+                startAutoplay();
+            }
+
+            slider.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+            slider.addEventListener('mouseleave', startAutoplay);
+
+            window.addEventListener('resize', updateSlider);
+            startAutoplay();
+        });
+
+
+        /* ==================================================
+           3. LIGHTBOX GALLERY
+        ================================================== */
+        const lightbox = document.getElementById('lightbox');
+        const mainImg = document.getElementById('lightbox-main-img');
+        const thumbnailsContainer = document.getElementById('lightbox-thumbnails-container');
+        const closeBtn = document.getElementById('close-lightbox');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const clickedImg = e.target;
+                const galleryName = clickedImg.getAttribute('data-gallery');
+
+                mainImg.src = clickedImg.src;
+                lightbox.classList.add('active');
+                thumbnailsContainer.innerHTML = '';
+
+                const currentGalleryImages = document.querySelectorAll(`.gallery-item[data-gallery="${galleryName}"]`);
+
+                currentGalleryImages.forEach(img => {
+                    const thumb = document.createElement('img');
+                    thumb.src = img.src;
+
+                    if(img.src === clickedImg.src) thumb.classList.add('active-thumb');
+
+                    thumb.addEventListener('click', () => {
+                        mainImg.src = thumb.src;
+                        document.querySelectorAll('.lightbox-thumbnails img').forEach(t => t.classList.remove('active-thumb'));
+                        thumb.classList.add('active-thumb');
+                    });
+
+                    thumbnailsContainer.appendChild(thumb);
+                });
+            });
+        });
+
+        closeBtn.addEventListener('click', () => lightbox.classList.remove('active'));
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-main-view')) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+
+        /* ==================================================
+           4. ANTI-COPY SECURITY
+        ================================================== */
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey || e.metaKey) {
+                const forbiddenKeys = ['c', 'u', 's', 'p', 'a', 'x', 'i', 'j'];
+                if (forbiddenKeys.includes(e.key.toLowerCase())) e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
