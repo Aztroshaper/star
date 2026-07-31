@@ -812,8 +812,6 @@
         <h1 class="project-title anim-reveal">OC</h1>
         <p class="project-subtitle anim-reveal delay-1">Original Characters</p>
 
-        <img src="https://via.placeholder.com/1400x800/111111/FFB300?text=OC+Main+Art" alt="OC Main" class="hero-image anim-reveal delay-2 gallery-item" data-gallery="oc">
-
         <div class="text-columns anim-reveal">
             <div>
                 <h3>WORLD BUILDING</h3>
@@ -825,25 +823,19 @@
             </div>
         </div>
 
-        <div class="slider-section anim-reveal" data-slider="3">
-            <button class="slider-arrow arrow-left">❮</button>
-            <button class="slider-arrow arrow-right">❯</button>
-            <div class="slider-track">
-                <div class="slider-slide active-slide">
-                    <img src="https://via.placeholder.com/1000x600/1a1a1a/ffffff?text=OC+Slide+1" class="gallery-item" data-gallery="oc">
-                </div>
-                <div class="slider-slide">
-                    <img src="https://via.placeholder.com/1000x600/0a0a0a/ffffff?text=OC+Slide+2" class="gallery-item" data-gallery="oc">
-                </div>
-            </div>
+        <div class="wide-stack anim-reveal">
+            <img src="oc1.png" alt="OC Illustration 1" class="gallery-item" data-gallery="oc">
         </div>
 
-        <div class="grid-header anim-reveal">
-            <h3><span>Sketches</span> & Renders</h3>
+        <div class="image-grid grid-3 anim-reveal" style="margin-bottom: 30px;">
+            <img src="oc2.png" alt="OC Illustration 2" class="gallery-item" data-gallery="oc" style="background: transparent; object-fit: cover;">
+            <img src="oc3.png" alt="OC Illustration 3" class="gallery-item" data-gallery="oc" style="background: transparent; object-fit: cover;">
+            <img src="oc6.png" alt="OC Illustration 4" class="gallery-item" data-gallery="oc" style="background: transparent; object-fit: cover;">
         </div>
-        <div class="image-grid anim-reveal">
-            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=OC+Grid+1" class="gallery-item" data-gallery="oc">
-            <img src="https://via.placeholder.com/500x700/222222/FFB300?text=OC+Grid+2" class="gallery-item" data-gallery="oc">
+
+        <div class="image-grid anim-reveal" style="margin-bottom: 80px;">
+            <img src="oc4.png" alt="OC Illustration 5" class="gallery-item" data-gallery="oc" style="object-fit: cover;">
+            <img src="oc5.png" alt="OC Illustration 6" class="gallery-item" data-gallery="oc" style="object-fit: cover;">
         </div>
     </section>
 
@@ -913,6 +905,8 @@
             const prevBtn = slider.querySelector('.arrow-left');
             const nextBtn = slider.querySelector('.arrow-right');
 
+            if(!track || slides.length === 0) return;
+
             let currentIndex = 0;
             const slideCount = slides.length;
             let autoPlayInterval;
@@ -940,8 +934,8 @@
                 updateSlider();
             }
 
-            nextBtn.addEventListener('click', () => { nextSlide(); resetAutoplay(); });
-            prevBtn.addEventListener('click', () => { prevSlide(); resetAutoplay(); });
+            if(nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetAutoplay(); });
+            if(prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetAutoplay(); });
 
             function startAutoplay() {
                 autoPlayInterval = setInterval(nextSlide, 4000);
