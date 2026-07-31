@@ -419,47 +419,56 @@
         @keyframes bulb-blink { 0% { opacity: 0.2; transform: scale(0.75); } 100% { opacity: 1; transform: scale(1.15); } }
 
         @media (max-width: 768px) {
-            :root { --menu-bar-h: 62px; }
-            .logo-3d-master { width: 420px; height: 420px; }
-            .logo-perspective { margin-bottom: 60px; }
-            .loading-interface { gap: 20px; }
-            .stars-track { gap: 14px; }
-            .star-icon { width: 34px; height: 34px; }
-            .status-text { font-size: 14pt; letter-spacing: 6px; }
-            .status-text.visible { letter-spacing: 4px; }
+            :root { --menu-bar-h: 50px; }
+            .logo-3d-master { width: 50vmin; height: 50vmin; }
+            .logo-perspective { margin-bottom: 10vmin; }
             
-            #yellow-panel { width: 220px; padding: 15px 15px calc(var(--menu-bar-h) + 20px) 80px; -webkit-mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%); mask: radial-gradient(circle 80px at 0% 50%, transparent 97%, black 97.5%); }
-            #yellow-panel::after { background: radial-gradient(circle 80px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); }
-            #yellow-panel-left { width: 220px; padding: 15px 80px calc(var(--menu-bar-h) + 20px) 15px; -webkit-mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%); mask: radial-gradient(circle 80px at 100% 50%, transparent 97%, black 97.5%); }
-            #yellow-panel-left::after { background: radial-gradient(circle 80px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); }
-            .panel-svg { width: 50px; height: 50px; }
-            .panel-left-img { width: 150px; height: 150px; position: absolute; top: 10px; left: 10px; margin-top: 0; margin-bottom: 0; }
-            .media-container { width: 120px; height: 160px; margin-bottom: 20px; }
-            .collab-text { width: 120px; font-size: 10px; margin-bottom: 20px; }
-            .desc-container { width: 120px; height: 160px; margin-top: 170px; margin-bottom: 20px; }
-            .desc-text { font-size: 11px; line-height: 1.4; }
+            #yellow-panel { 
+                width: 35vw; 
+                padding: 15px 15px calc(var(--menu-bar-h) + 15px) 40px; 
+                -webkit-mask: radial-gradient(circle 50px at 0% 50%, transparent 97%, black 97.5%); 
+                mask: radial-gradient(circle 50px at 0% 50%, transparent 97%, black 97.5%); 
+            }
+            #yellow-panel::after { 
+                background: radial-gradient(circle 50px at 0% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); 
+            }
+            #yellow-panel-left { 
+                width: 35vw; 
+                padding: 15px 40px calc(var(--menu-bar-h) + 15px) 15px; 
+                -webkit-mask: radial-gradient(circle 50px at 100% 50%, transparent 97%, black 97.5%); 
+                mask: radial-gradient(circle 50px at 100% 50%, transparent 97%, black 97.5%); 
+            }
+            #yellow-panel-left::after { 
+                background: radial-gradient(circle 50px at 100% 50%, transparent 97%, #111 97.5%, #111 99.5%, transparent 100%); 
+            }
             
-            #bottom-nav { bottom: calc(var(--menu-bar-h) + 10px); gap: 15px; width: 100%; pointer-events: none; }
-            #nav-title { font-size: 10pt; letter-spacing: 5px; pointer-events: auto; cursor: pointer; }
-            #contact-area { top: 35px; gap: 0; width: 90%; padding: 0; justify-content: space-around; right: 80px; left: auto; transform: none; }
-            .contact-item { font-size: 2.4rem; }
-            .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.4)) rotate(calc(var(--rot) * 0.6)); }
-            .menu-center-items { gap: clamp(8px, 4.5vw, 22px); }
-            .menu-bar-item { font-size: 8px; gap: 3px; padding: 6px 3px; }
-            .menu-bar-item i { font-size: 16px; }
-            #mute-btn { left: 15px; font-size: 20px; }
-            #copyright-text { right: 15px; font-size: 9px; }
+            .panel-left-img { width: 25vw; height: 25vw; position: absolute; top: 10px; left: 10px; margin-top: 0; margin-bottom: 0; }
+            .desc-container { width: 28vw; height: auto; margin-top: 30vw; margin-bottom: 15px; }
+            .desc-text { font-size: 2.2vw; line-height: 1.4; }
+            
+            .panel-svg { width: 12vw; height: 12vw; margin-bottom: 20px; }
+            .media-container { width: 28vw; height: 35vw; margin-bottom: 15px; border-radius: 10vw 10vw 2vw 2vw; }
+            .collab-text { width: 28vw; font-size: 2vw; margin-bottom: 15px; }
+            
+            #bottom-nav { bottom: calc(var(--menu-bar-h) + 5px); gap: 10px; width: 100%; pointer-events: none; }
+            #nav-title { font-size: 3vw; letter-spacing: 2px; pointer-events: auto; cursor: pointer; }
+            
+            #contact-area { top: 20px; gap: 0; width: 100%; max-width: none; right: auto; justify-content: space-evenly; padding: 0; transform: none; left: auto; }
+            .contact-item { font-size: 5vw; }
+            .contact-arc-wrapper { transform: translateY(calc(var(--ty) * 0.2)) rotate(calc(var(--rot) * 0.3)); }
+            
+            .menu-center-items { gap: 3vw; }
+            .menu-bar-item { font-size: 1.8vw; gap: 2px; padding: 4px 2px; }
+            .menu-bar-item i { font-size: 4vw; }
+            #mute-btn { left: 10px; font-size: 5vw; }
+            #copyright-text { right: 10px; font-size: 1.5vw; }
         }
 
         @media (max-width: 480px) {
-            .logo-3d-master { width: 320px; height: 320px; }
-            .logo-perspective { margin-bottom: 40px; }
-            .status-text { font-size: 12pt; letter-spacing: 4px; }
-            .status-text.visible { letter-spacing: 2px; }
-            .star-icon { width: 26px; height: 26px; }
-            .stars-track { gap: 6px; }
             .menu-bar-item span { display: none; }
-            .menu-bar-item i { font-size: 20px; }
+            .menu-bar-item i { font-size: 5vw; }
+            .desc-text { font-size: 2.5vw; }
+            .collab-text { font-size: 2.5vw; }
             .menu-center-items { gap: clamp(10px, 7vw, 26px); }
         }
     </style>
