@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Illustration Gallery</title>
+    <title>Illustration</title>
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFB300'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -46,10 +45,15 @@
             line-height: 1.8;
             overflow-x: hidden;
             padding-bottom: var(--menu-bar-h);
+            -webkit-touch-callout: none;
         }
 
         img {
             -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
             display: block;
             width: 100%;
             object-fit: cover;
@@ -59,7 +63,6 @@
             font-family: 'Aztro', 'Segoe UI', Tahoma, sans-serif;
         }
 
-
         .picos-blancos-top {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 16px;
@@ -68,7 +71,6 @@
             z-index: 500;
             pointer-events: none;
         }
-
 
         .top-bar {
             position: fixed;
@@ -155,7 +157,6 @@
 
         .spacer { height: 160px; }
 
-    
         .anim-reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -171,7 +172,6 @@
         .delay-1 { transition-delay: 0.1s; }
         .delay-2 { transition-delay: 0.2s; }
         .delay-3 { transition-delay: 0.3s; }
-
 
         .act-divider {
             display: flex;
@@ -203,7 +203,6 @@
             0% { opacity: 0.25; transform: scale(0.7); }
             100% { opacity: 1; transform: scale(1.15); }
         }
-
         
         .project-section {
             padding-top: 60px;
@@ -230,7 +229,6 @@
             text-transform: uppercase;
         }
 
-        /* 1. Main Hero Image */
         .hero-image {
             width: 90%;
             max-width: 1400px;
@@ -250,7 +248,132 @@
             box-shadow: 0 20px 50px rgba(255, 179, 0, 0.25);
         }
 
-        /* 2. Text Columns */
+        .poster-text-split {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto 70px auto;
+        }
+
+        .poster-text-split .poster-img {
+            width: 45%;
+            max-width: 550px;
+            border: 2px solid #000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            cursor: pointer;
+            transition: transform 0.6s, border-color 0.4s, box-shadow 0.4s;
+        }
+
+        .poster-text-split .poster-img:hover {
+            transform: scale(1.02);
+            border-color: var(--yellow);
+            box-shadow: 0 20px 50px rgba(255, 179, 0, 0.25);
+        }
+
+        .poster-text-split .text-content {
+            width: 55%;
+            text-align: left;
+        }
+
+        .poster-text-split .text-content h1 {
+            font-size: 3.5rem;
+            font-weight: normal;
+            letter-spacing: 12px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 179, 0, 0.15);
+            color: var(--white);
+        }
+
+        .poster-text-split .text-content h2 {
+            color: var(--yellow);
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .poster-text-split .text-content h3 {
+            color: var(--yellow);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        .poster-text-split .text-content p {
+            font-size: 1rem;
+            color: var(--text-gray);
+            font-weight: normal;
+            text-align: justify;
+            margin-bottom: 30px;
+        }
+
+        .grid-6 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin-bottom: 200px;
+        }
+        
+        .grid-6 img { height: 300px; }
+
+        .wide-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto 60px auto;
+        }
+
+        .wide-stack img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #000;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.85;
+        }
+
+        .wide-stack img:hover {
+            opacity: 1;
+            transform: translateY(-5px);
+            border-color: var(--yellow);
+            box-shadow: 0 15px 30px rgba(255, 179, 0, 0.25);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin-bottom: 0px;
+        }
+        
+        .grid-3 img {
+            height: 350px;
+            object-fit: contain;
+            background: #050505;
+        }
+
+        .bottom-logo-webtoon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 120px auto 80px auto;
+            width: 90%;
+        }
+
+        .bottom-logo-webtoon img {
+            max-width: 1235px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.4s;
+        }
+
+        .bottom-logo-webtoon img:hover {
+            transform: scale(1.03);
+        }
+
         .text-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -276,7 +399,6 @@
             text-align: justify;
         }
 
-        /* 3. Advanced Slider */
         .slider-section {
             width: 100%;
             position: relative;
@@ -339,7 +461,6 @@
         .arrow-left { left: 8%; }
         .arrow-right { right: 8%; }
 
-        /* 4. Image Grid */
         .grid-header {
             text-align: center;
             margin-bottom: 50px;
@@ -379,7 +500,6 @@
             box-shadow: 0 15px 30px rgba(255, 179, 0, 0.25);
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 70px 20px 40px 20px;
@@ -412,7 +532,6 @@
             transform: translateY(-3px);
         }
 
-        /* === LIGHTBOX === */
         #lightbox {
             display: none;
             position: fixed;
@@ -519,7 +638,6 @@
             box-shadow: 0 0 0 2px var(--yellow);
         }
 
-        /* === BOTTOM MENU BAR === */
         #bottom-menu-bar {
             position: fixed;
             left: 0; bottom: 0;
@@ -557,11 +675,14 @@
         .menu-bar-item:active { transform: translateY(-1px) scale(0.95); }
         .menu-bar-item:focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; border-radius: 6px; }
 
-        /* Print Security */
         @media print { body { display: none !important; } }
 
-        /* Responsive */
         @media (max-width: 900px) {
+            .poster-text-split { flex-direction: column; text-align: center; }
+            .poster-text-split .poster-img { width: 80%; }
+            .poster-text-split .text-content { width: 100%; text-align: center; }
+            .poster-text-split .text-content p { text-align: center; }
+
             .text-columns { grid-template-columns: 1fr; gap: 40px; }
             .project-title { font-size: 3rem; letter-spacing: 10px; }
             .slider-slide { min-width: 90%; }
@@ -590,12 +711,10 @@
 
     <div class="picos-blancos-top"></div>
 
-
     <header class="top-bar">
         <a href="index.html" class="btn-back"><i class="fas fa-chevron-left"></i> Back to Portfolio</a>
         <span class="brand-mark">Aztroshaper™</span>
     </header>
-
 
     <nav class="sub-menu">
         <a href="#sinistars">Sinistars</a>
@@ -604,54 +723,53 @@
     </nav>
 
     <div class="spacer"></div>
-
   
     <section id="sinistars" class="project-section">
-        <h1 class="project-title anim-reveal">Sinistars</h1>
-        <p class="project-subtitle anim-reveal delay-1">Illustration & Concept Art</p>
+        <img src="guardiand.png" alt="Sinistars Main Art" class="hero-image anim-reveal gallery-item" data-gallery="sinistars">
 
-        <img src="guardiand.png" alt="Sinistars Main Art" class="hero-image anim-reveal delay-2 gallery-item" data-gallery="sinistars">
+        <div class="poster-text-split anim-reveal delay-1">
+            <img src="poster.png" alt="Sinistars Poster" class="poster-img gallery-item" data-gallery="sinistars">
+            <div class="text-content">
+                <h1>SINISTARS</h1>
+                <h2>ILLUSTRATION & CONCEPT ART</h2>
 
-        <div class="text-columns anim-reveal">
-            <div>
+                <h3>SYNOPSIS</h3>
+                <p>When a star dies, it should stay dead, but they come back as something monstrous...a Sinistar. Now the cosmos is breaking apart, and Lucía the human teams up with Starthoot, a conscious Sinistar, to find the Star Shaper and stop the chaos before every fallen star rises again.</p>
+
                 <h3>VISUAL DEVELOPMENT</h3>
                 <p>The development of the Sinistars series explores dark themes and dense atmospheres. The color palette focuses on deep blacks contrasted with flashes of warm lighting. Every stroke is designed to evoke mystery and raw power.</p>
             </div>
-            <div>
-                <h3>CONCEPT</h3>
-                <p>Inspired by cyberpunk aesthetics and dark fantasy, the characters are designed with a high level of detail in their armor and expressions. The compositions consistently seek asymmetry to generate visual tension for the viewer.</p>
-            </div>
         </div>
 
-        <div class="slider-section anim-reveal" data-slider="1">
-            <button class="slider-arrow arrow-left">❮</button>
-            <button class="slider-arrow arrow-right">❯</button>
-            <div class="slider-track">
-                <div class="slider-slide active-slide">
-                    <img src="https://via.placeholder.com/1000x600/1a1a1a/ffffff?text=Sinistars+Slide+1" class="gallery-item" data-gallery="sinistars">
-                </div>
-                <div class="slider-slide">
-                    <img src="https://via.placeholder.com/1000x600/222222/ffffff?text=Sinistars+Slide+2" class="gallery-item" data-gallery="sinistars">
-                </div>
-                <div class="slider-slide">
-                    <img src="https://via.placeholder.com/1000x600/0a0a0a/ffffff?text=Sinistars+Slide+3" class="gallery-item" data-gallery="sinistars">
-                </div>
-            </div>
+        <div class="image-grid grid-6 anim-reveal">
+            <img src="luna.png" class="gallery-item" data-gallery="sinistars">
+            <img src="se.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="se2.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="se3.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="se4.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="damn.png" class="gallery-item" data-gallery="sinistars">
         </div>
 
-        <div class="grid-header anim-reveal">
-            <h3><span>Character</span> Exploration</h3>
+        <div class="wide-stack anim-reveal">
+            <img src="se5.webp" class="gallery-item" data-gallery="sinistars" style="margin-top: 120px;">
+            <img src="se6.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="se7.webp" class="gallery-item" data-gallery="sinistars">
+            <img src="starry.png" class="gallery-item" data-gallery="sinistars" style="object-fit: contain; border-color: transparent; background: transparent; box-shadow: none;">
         </div>
-        <div class="image-grid anim-reveal">
-            <img src="https://via.placeholder.com/500x700/111111/FFB300?text=Character+1" class="gallery-item" data-gallery="sinistars">
-            <img src="https://via.placeholder.com/500x700/1a1a1a/FFB300?text=Character+2" class="gallery-item" data-gallery="sinistars">
-            <img src="https://via.placeholder.com/500x700/050505/FFB300?text=Character+3" class="gallery-item" data-gallery="sinistars">
+
+        <div class="image-grid grid-3 anim-reveal">
+            <img src="marciano.png" class="gallery-item" data-gallery="sinistars" style="object-fit: cover; object-position: right center;">
+            <img src="starchild.png" class="gallery-item" data-gallery="sinistars">
+            <img src="lucia.png" class="gallery-item" data-gallery="sinistars">
+        </div>
+
+        <div class="bottom-logo-webtoon anim-reveal">
+            <img src="webtoon.png" class="gallery-item" data-gallery="sinistars">
         </div>
     </section>
 
     <div class="act-divider"></div>
 
-    <!-- ================= PROJECT 2: FANARTS ================= -->
     <section id="fanarts" class="project-section">
         <h1 class="project-title anim-reveal">Fanarts</h1>
         <p class="project-subtitle anim-reveal delay-1">Tributes & Redesigns</p>
@@ -695,7 +813,6 @@
 
     <div class="act-divider"></div>
 
-    <!-- ================= PROJECT 3: OC ================= -->
     <section id="oc" class="project-section">
         <h1 class="project-title anim-reveal">OC</h1>
         <p class="project-subtitle anim-reveal delay-1">Original Characters</p>
@@ -737,7 +854,7 @@
 
     <div class="act-divider"></div>
 
-        <footer class="footer anim-reveal">
+    <footer class="footer anim-reveal">
         <div class="footer-social">
             <a href="https://instagram.com/aztroshaper" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
             <a href="https://tiktok.com/@aztroshaper" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
@@ -753,9 +870,7 @@
         <div class="lightbox-main-view">
             <img id="lightbox-main-img" src="" alt="Expanded View">
         </div>
-        <div class="lightbox-thumbnails" id="lightbox-thumbnails-container">
-
-        </div>
+        <div class="lightbox-thumbnails" id="lightbox-thumbnails-container"></div>
     </div>
 
     <nav id="bottom-menu-bar" aria-label="Main menu">
@@ -777,7 +892,6 @@
     </nav>
 
     <script>
-
         document.querySelectorAll('.act-divider').forEach(divider => {
             for (let i = 0; i < 16; i++) {
                 const bulb = document.createElement('span');
@@ -786,7 +900,6 @@
             }
         });
 
-  
         const revealElements = document.querySelectorAll('.anim-reveal');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -797,9 +910,6 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        /* ==================================================
-           2. ADVANCED ANIMATED SLIDERS (AUTOPLAY + ARROWS)
-        ================================================== */
         const sliders = document.querySelectorAll('.slider-section');
 
         sliders.forEach(slider => {
@@ -854,10 +964,6 @@
             startAutoplay();
         });
 
-
-        /* ==================================================
-           3. LIGHTBOX GALLERY
-        ================================================== */
         const lightbox = document.getElementById('lightbox');
         const mainImg = document.getElementById('lightbox-main-img');
         const thumbnailsContainer = document.getElementById('lightbox-thumbnails-container');
@@ -899,11 +1005,9 @@
             }
         });
 
-
-        /* ==================================================
-           4. ANTI-COPY SECURITY
-        ================================================== */
         document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('dragstart', event => event.preventDefault());
+        document.addEventListener('selectstart', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12') e.preventDefault();
             if (e.ctrlKey || e.metaKey) {
